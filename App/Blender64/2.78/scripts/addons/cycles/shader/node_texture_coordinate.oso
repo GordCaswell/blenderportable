@@ -1,6 +1,6 @@
 OpenShadingLanguage 1.00
 # Compiled by oslc 1.7.3
-# options: -q -O2 -IK:/BlenderGit/blender/intern/cycles/kernel/shaders -o K:/BlenderGit/build_windows_Release_x64_vc12/intern/cycles/kernel/shaders/node_texture_coordinate.oso
+# options: -q -O2 -IK:/BlenderGit/blender/intern/cycles/kernel/shaders -o K:/BlenderGit/build_windows_Release_x64_vc12_Release/intern/cycles/kernel/shaders/node_texture_coordinate.oso
 shader node_texture_coordinate
 param	normal	NormalIn	0 0 0		%read{10,36} %write{0,0} %initexpr
 param	int	is_background	0		%read{1,1} %write{2147483647,-1}

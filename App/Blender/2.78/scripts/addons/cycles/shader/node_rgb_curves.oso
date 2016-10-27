@@ -1,6 +1,6 @@
 OpenShadingLanguage 1.00
 # Compiled by oslc 1.7.3
-# options: -q -O2 -IK:/BlenderGit/blender/intern/cycles/kernel/shaders -o K:/BlenderGit/build_windows_Release_x86_vc12/intern/cycles/kernel/shaders/node_rgb_curves.oso
+# options: -q -O2 -IK:/BlenderGit/blender/intern/cycles/kernel/shaders -o K:/BlenderGit/build_windows_Release_x86_vc12_Release/intern/cycles/kernel/shaders/node_rgb_curves.oso
 shader node_rgb_curves
 param	color[]	ramp	0 0 0		%read{7,186} %write{2147483647,-1}
 param	float	min_x	0		%read{0,2} %write{2147483647,-1}

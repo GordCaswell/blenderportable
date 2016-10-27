@@ -1,6 +1,6 @@
 OpenShadingLanguage 1.00
 # Compiled by oslc 1.7.3
-# options: -q -O2 -IK:/BlenderGit/blender/intern/cycles/kernel/shaders -o K:/BlenderGit/build_windows_Release_x64_vc12/intern/cycles/kernel/shaders/node_vector_transform.oso
+# options: -q -O2 -IK:/BlenderGit/blender/intern/cycles/kernel/shaders -o K:/BlenderGit/build_windows_Release_x64_vc12_Release/intern/cycles/kernel/shaders/node_vector_transform.oso
 shader node_vector_transform
 param	string	type	"vector"		%read{0,11} %write{2147483647,-1}
 param	string	convert_from	"world"		%read{7,14} %write{2147483647,-1}

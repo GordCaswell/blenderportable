@@ -1,6 +1,6 @@
 OpenShadingLanguage 1.00
 # Compiled by oslc 1.7.3
-# options: -q -O2 -IK:/BlenderGit/blender/intern/cycles/kernel/shaders -o K:/BlenderGit/build_windows_Release_x86_vc12/intern/cycles/kernel/shaders/node_toon_bsdf.oso
+# options: -q -O2 -IK:/BlenderGit/blender/intern/cycles/kernel/shaders -o K:/BlenderGit/build_windows_Release_x86_vc12_Release/intern/cycles/kernel/shaders/node_toon_bsdf.oso
 shader node_toon_bsdf
 param	color	Color	0.80000001 0.80000001 0.80000001		%read{4,8} %write{2147483647,-1}
 param	string	component	"diffuse"		%read{1,5} %write{2147483647,-1}

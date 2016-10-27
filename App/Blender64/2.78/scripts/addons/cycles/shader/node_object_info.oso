@@ -1,6 +1,6 @@
 OpenShadingLanguage 1.00
 # Compiled by oslc 1.7.3
-# options: -q -O2 -IK:/BlenderGit/blender/intern/cycles/kernel/shaders -o K:/BlenderGit/build_windows_Release_x64_vc12/intern/cycles/kernel/shaders/node_object_info.oso
+# options: -q -O2 -IK:/BlenderGit/blender/intern/cycles/kernel/shaders -o K:/BlenderGit/build_windows_Release_x64_vc12_Release/intern/cycles/kernel/shaders/node_object_info.oso
 shader node_object_info
 oparam	point	Location	0 0 0		%read{2147483647,-1} %write{0,0}
 oparam	float	ObjectIndex	0		%read{2147483647,-1} %write{1,1}

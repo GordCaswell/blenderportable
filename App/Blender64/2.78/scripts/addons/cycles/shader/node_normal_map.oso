@@ -1,6 +1,6 @@
 OpenShadingLanguage 1.00
 # Compiled by oslc 1.7.3
-# options: -q -O2 -IK:/BlenderGit/blender/intern/cycles/kernel/shaders -o K:/BlenderGit/build_windows_Release_x64_vc12/intern/cycles/kernel/shaders/node_normal_map.oso
+# options: -q -O2 -IK:/BlenderGit/blender/intern/cycles/kernel/shaders -o K:/BlenderGit/build_windows_Release_x64_vc12_Release/intern/cycles/kernel/shaders/node_normal_map.oso
 shader node_normal_map
 param	normal	NormalIn	0 0 0		%read{1,88} %write{0,0} %initexpr
 param	float	Strength	1		%read{83,86} %write{2147483647,-1}

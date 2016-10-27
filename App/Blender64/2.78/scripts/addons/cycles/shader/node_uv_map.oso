@@ -1,6 +1,6 @@
 OpenShadingLanguage 1.00
 # Compiled by oslc 1.7.3
-# options: -q -O2 -IK:/BlenderGit/blender/intern/cycles/kernel/shaders -o K:/BlenderGit/build_windows_Release_x64_vc12/intern/cycles/kernel/shaders/node_uv_map.oso
+# options: -q -O2 -IK:/BlenderGit/blender/intern/cycles/kernel/shaders -o K:/BlenderGit/build_windows_Release_x64_vc12_Release/intern/cycles/kernel/shaders/node_uv_map.oso
 shader node_uv_map
 param	int	from_dupli	0		%read{0,14} %write{2147483647,-1}
 param	string	attribute	""		%read{2,5} %write{2147483647,-1} %derivs

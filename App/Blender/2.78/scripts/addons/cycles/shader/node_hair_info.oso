@@ -1,6 +1,6 @@
 OpenShadingLanguage 1.00
 # Compiled by oslc 1.7.3
-# options: -q -O2 -IK:/BlenderGit/blender/intern/cycles/kernel/shaders -o K:/BlenderGit/build_windows_Release_x86_vc12/intern/cycles/kernel/shaders/node_hair_info.oso
+# options: -q -O2 -IK:/BlenderGit/blender/intern/cycles/kernel/shaders -o K:/BlenderGit/build_windows_Release_x86_vc12_Release/intern/cycles/kernel/shaders/node_hair_info.oso
 shader node_hair_info
 oparam	float	IsStrand	0		%read{2147483647,-1} %write{1,1}
 oparam	float	Intercept	0		%read{2147483647,-1} %write{2,2}

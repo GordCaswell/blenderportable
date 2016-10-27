@@ -1,6 +1,6 @@
 OpenShadingLanguage 1.00
 # Compiled by oslc 1.7.3
-# options: -q -O2 -IK:/BlenderGit/blender/intern/cycles/kernel/shaders -o K:/BlenderGit/build_windows_Release_x64_vc12/intern/cycles/kernel/shaders/node_convert_from_point.oso
+# options: -q -O2 -IK:/BlenderGit/blender/intern/cycles/kernel/shaders -o K:/BlenderGit/build_windows_Release_x64_vc12_Release/intern/cycles/kernel/shaders/node_convert_from_point.oso
 shader node_convert_from_point
 param	point	value_point	0 0 0		%read{0,25} %write{2147483647,-1}
 oparam	string	value_string	""		%read{2147483647,-1} %write{2147483647,-1}
