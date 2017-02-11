@@ -1,5 +1,5 @@
 OpenShadingLanguage 1.00
-# Compiled by oslc 1.7.3
+# Compiled by oslc 1.7.5
 # options: -q -O2 -IK:/BlenderGit/blender/intern/cycles/kernel/shaders -o K:/BlenderGit/build_windows_Release_x86_vc12_Release/intern/cycles/kernel/shaders/node_checker_texture.oso
 shader node_checker_texture
 param	int	use_mapping	0		%read{2,2} %write{2147483647,-1}

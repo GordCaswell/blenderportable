@@ -1,0 +1,3228 @@
+commit 21700373aead71afb6108a190a2b94302e94b8d3
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Mon Oct 31 12:22:40 2016 +0100
+
+    Fix T49873: FBX exporter not handling correctly Object-assigned materials.
+    
+    Note that FBX still links materials to geometry, so we have to export
+    own version of mesh in that case (i.e. Object-materials break instancing
+    if any).
+
+commit a49ccb062769dcf8703d2590b485e8c3a9f8a01b
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Mon Oct 24 20:48:45 2016 +0200
+
+    FBX: enable import of 7500 (FBX2016) files.
+    
+    Looks like only change here was that binary switch from uint32 to uint64
+    for some core metadata of the format. At leas, could import some 7500
+    files here with that mere change.
+    
+    Thanks again @xchip (Raul Aguaviva) for finding the culprit in T49822!
+
+commit 22b54f61a1e50fd0beb5e87d2dd1a865ee8da9b7
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Mon Oct 24 20:36:28 2016 +0200
+
+    FBX: Fix fbx2json tool for 7500 FBX files (FBX2016).
+    
+    Based on patch from T49822, thanks a bunch for investigation.
+    
+    Change is actually pretty limited - 7500 now uses some uint64 instead of
+    uint32 integers as some root element info (like size etc.), and
+    accordingly raised the 'stop nested data' marker from 13 to 25 NULL
+    bytes.
+    
+    Next step: check if we can make actual importer load FBX2016 files that
+    simply!
+
+commit 80cfaeca0954b51d950a5cb27312768a7a99af50
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Thu Sep 22 16:55:38 2016 +0200
+
+    Fix T49412: We do not support FBX 7500 and above, at least properly report it to users.
+    
+    Those ... people? at AD changed the whole format on binary level it'd seem, even low-level,
+    binary parsing is broken with those files, nothing else to do but go back to
+    binary hacking/inspection of new files if we want to support them... will let that
+    to someone else, FBX has successfully exhausted my patience since years already,
+    even all the backup emergency reserves I had.
+
+commit 3dc2ed11c05de63d2d98b9914f5f1e1b25db8f6f
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Tue Aug 30 21:20:45 2016 +0200
+
+    Fix T49197: all virtual leaf bones had same uuid.
+    
+    Kinda odd nobody noticed this so far :/
+    
+    Also, cleanup: do not loop over key/value of a dict when you only need the keys...
+
+commit 96a957faf31e15ed4922b9cb544fd154b01dee5e
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Sun Jul 31 18:37:50 2016 +0200
+
+    Fix T48977: rigged meshes' animation is not really supported in FBX.
+    
+    rigged meshes are global, but implicitly local to their armature... so far
+    was exporting their animation in global space, and trying to correct it back to local
+    on import, but this cannot work that way - and actually does not make much sense.
+    
+    So for now, fully disabling tranform animation of rigged meshes. Did quick check with
+    Unreal engine, and looks like it is totally ignoring any rigged mesh animation anyway.
+    
+    If a kind miracle gives us some day full specs of that format, we may learn
+    what exact behavior is expected in that case.
+
+commit 2b6a7563ac4db60d02c9530c4d1870ea8c3a6a0e
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Fri Jun 24 12:51:59 2016 +0200
+
+    Fix T48713: Problem when importing FBX file with 2 armatures.
+    
+    Yet another case of the infamous 'iterating over something while modifying it' issue.
+    Here, setting parent of a node actually modifies the children list of its previous parent,
+    which resulted in missed items in the iteration.
+
+commit c4a79435e45610d50dadfacf2ed2c09ce595f70f
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Fri Jun 10 15:54:49 2016 +0200
+
+    Fix T48631: FBX setting "bake_anim_use_nla_strips": True, fails to export unique animations to each take.
+    
+    Active action of object's animdata would override actual NLA's strip animation...
+
+commit 184e74fbe76d105919689b24e2dbd80aaac8f588
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Sun May 1 17:29:17 2016 +0200
+
+    Fix T48322: Proxy Armature Animations are not exported to FBX.
+    
+    This is the 'proxy case', only fixable one for now (linked object have un-editable animdata.action,
+    so we cannot export animations for them for now).
+    
+    Issue was simply that armature modifier of linked mesh object still 'points' to linked armature
+    object, and not to its local proxy. Fix is luckily easy (for once)!
+
+commit dbb54eee76d38e6936f0a32fd21a14844800f498
+Author: Sandy Carter <noreply@blender.org>
+Date:   Fri Apr 29 14:21:23 2016 +0200
+
+    Enable material transparency when its alpha is below 1.0.
+    
+    Differential Revision: https://developer.blender.org/D1934
+
+commit c964103c1bd0698281e6bf8cd8d05f85947c0546
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Fri Apr 8 14:48:27 2016 +0200
+
+    Fix T48089: Animation won't export to FBX in case active action is read-only (some NLA usages).
+    
+    Skip 'all actions' options for those objects...
+
+commit 219e882b3168669bb733dafcce10bb79d90e8002
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Wed Feb 17 13:28:28 2016 +0100
+
+    Fix T47457: FBX export: Force full keying in case Simplify factor is set to 0.0
+    
+    Note that it will export all sampled values - even for actually non-animated channels,
+    not really possible to avoid that without a hell lot more of code, and this rea is
+    convoluted enough right now.
+
+commit dab66a8e1dcc8f152309d3f6763c553bfa08ceae
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Tue Feb 16 03:20:53 2016 +1100
+
+    Don't use context.active_object
+    
+    This can fail in some cases (batch converting for example).
+
+commit cf871d6a3027bad3b39b66abf71a5d08f7650db5
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Fri Feb 12 09:26:00 2016 +0100
+
+    FBX exporter: add option to choose which type of FBX node to use as armature.
+    
+    By default, Blender uses a 'Null' one (rouglhly equivalent to our Empty),
+    but now user can also choose a 'Root' or even plain "LimbNode".
+    
+    This seems to be necessary to hack around some Unity bug (see T47325).
+    
+    WARNING: the 'LimbNode' option *does not* import back correctly in Blender.
+    Use it in pure export-only cases.
+
+commit 226b00844624cdc222bfcf0aac6c226b96de3550
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Tue Dec 8 12:09:10 2015 +1100
+
+    Use Python3.5's unpacking generalizations
+
+commit 2c2c7751c41765e35422f5da2fb1650ec9637721
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Wed Dec 2 17:25:57 2015 +0100
+
+    Fix T46912: FBX import from Wow Model Viewer not working.
+    
+    First file ever having 'Limb' (in addition to 'LimbNode'!) bones... Looks like we can more or less
+    use them as 'LimbNode' ones, though.
+
+commit fb661e5a13e09d64629d5b3a8d88b1ba5df628f7
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Wed Dec 2 17:03:56 2015 +0100
+
+    Fix related to T46912: Check a bit better we get a valid object generated from crappy FBX data.
+    
+    Also print version of FBX file in console messages.
+
+commit e9de9eed5d91aedded71131118b0252aa078b947
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Wed Dec 2 12:18:29 2015 +0100
+
+    Fix T46910: FBX import error due to unrecognized property flags set.
+    
+    Get rid of those flags asserts in read code, we do not use them anyway, and our goal is not
+    to be a FBX format validator, especially since there is no public FBX format...
+
+commit daf500661e0f886f1efc5f6e7f20a28ef6787234
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Fri Nov 20 21:51:10 2015 +0100
+
+    Fix T46581: Import FBX: Blender 2,.76 version breaks mesh rotation on FBX import (from Makehuman)
+    
+    Regression from rBAd7fa659c6f9d4922, looks like here we do not want pre/post corrections...
+    
+    Man, those matrices transform are a complete nightmare, guess this only breaks for maya-like FBX
+    (iirc 3dsmax-like ones do not use those pre/post transform stuff).
+
+commit 7ef985757de5c40c33bc7dd61dc9e3b7234e601e
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Tue Oct 13 18:02:02 2015 +0200
+
+    Fix error in case FBX file specifies no known pre-defined FPS and a null custom fps value...
+    
+    Patch by Julian (joolsa).
+    
+    Differential Revision: https://developer.blender.org/D1551
+
+commit 58a098ef8be9af602de5d4b973f6076c3d517b56
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Wed Aug 26 21:25:50 2015 +0200
+
+    Fix T45913: FBX Import: Add option to not import animations.
+    
+    Can be handy sometimes, especialy with files which should not be animated and yet contain animdata...
+
+commit cc70ce71171c5f14512524d47c2b3ec19df647e0
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Sun Aug 23 11:33:06 2015 +0200
+
+    Fix T45875: FBX export: Shape keys reset relative shape to basis.
+    
+    More a TODO than a bug actually, handling of skeys based on other skey was simply not implemented so far.
+
+commit 82ff141efc015ab3cb37cd9969a0073f24664661
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Fri Aug 21 00:50:35 2015 +0200
+
+    Fix T45859: FBX Export: Some objects are not instances.
+    
+    This was due to the fact that we generate temp meshes when applying modifiers -
+    but in dupliobject instances cases, this can be avoided.
+    
+    Also cleaned up a bit mesh data area, and fixed wrong template user number in this case.
+
+commit 962d1d0e8c3905589da7b6866ec207b0bb3bb527
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Thu Aug 20 20:43:08 2015 +0200
+
+    FBX Export: Write version of FBX addon too!
+    
+    Grrrr, could have sweared I had done that since ages...
+
+commit d7fa659c6f9d4922bbcf63d15a120786e1f6ee68
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Tue Aug 18 11:00:56 2015 +0200
+
+    Fix T45834: FBX Importer failed to importer.
+    
+    This file actually showed several issues:
+    *Not always using safe 'get_bind_matrix'
+    *Not protecting against zero-length bones in the force-connect area
+
+commit 34564dc442de355acfb7edd426a1dc265f0d761a
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Mon Aug 17 22:17:43 2015 +0200
+
+    Fix T45813: FBX export: add dummy stringification of custom props which are not directly supported by FBX format.
+    
+    This allows some thrid party app to have someting to parse if needed.
+    
+    Quite obviously, this only applies to exporter.
+
+commit 94abe3b97f5c0b1afaa084dc8918464d27689b88
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Wed Aug 12 12:56:04 2015 +0200
+
+    Fix T45756: FBX Export: bad handling of duplis (let's check on Object.is_duplicator, much cleaner solution).
+
+commit 0015dd2308be82151efc354e78d608f4108aeb14
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Wed Aug 5 21:19:21 2015 +0200
+
+    Fix T45677: Explicitely ignore dupli instances of armatures, this is not supported currently.
+    
+    Doubt to implement this any time soon, armatures and duplis are both complex area,
+    if you combine them together you get a Gordian knot (and have no right to cut it!).
+    
+    Also, this commit fixes a stupid mistake - dupli objects types were not checked at all before...
+
+commit 7f55da7477d5dc42c620ded92c1237fe7ea611ad
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Wed Aug 5 14:29:52 2015 +0200
+
+    Fix T45516: Our index generators can produce values below -1, consider all negative indices as 'skip' flags.
+
+commit 39b47b750841094b42f47fac862f464e992616d6
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Wed Aug 5 13:28:05 2015 +0200
+
+    Fix related to T45584: 'NLA Strips' animation export mode was not using 'Force Start/End Keying' correctly.
+
+commit 9c2c5413b26d7664b780ef42c21eea7826c6dc5f
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Sun Jul 19 12:56:17 2015 +0200
+
+    Fix T45487: fbx exporting weird keyframes.
+    
+    Previous 'simplifying' code was not handling correctly micro-fluctuations around zero
+    (caused by ugly float precision issues). Rewrote it more or less completely,
+    new code is simpler and only based on relative difference (by default, it
+    keys each time the diff is above 1e-4, and above 1e-4 * magnitude_of_values).
+    
+    Might produce more keys in some cases, but at least 'noise' shall never be
+    exported again.
+
+commit 8e62ba483ef5e56667f1601b9f7c08a58a5ba986
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Sat Jul 18 14:43:31 2015 +0200
+
+    FBX IO: Fix stupid mistake in recent UI refactor.
+
+commit 068ca0a5f61986ab6aa725a51d334c516c4b90f3
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Wed Jul 15 22:21:48 2015 +0200
+
+    FBX IO: Bring back UI into controll!
+    
+    UI of exporter (and, to some extent, importer) was wildly rampaging available space with all its options.
+    
+    Now we switch to some tab-like drawing, helps keeping things reasonable, and that categorization should
+    also help user to understand a bit better all those settings.
+    
+    Also added some more 'UI-compacting' tweaks.
+    
+    Let's hope 'muscle memory' bawling won't be too loud...
+
+commit b7567791a19f85b6886ab3bc933f9c2e1ed7333f
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Wed Jul 15 21:37:41 2015 +0200
+
+    FBX export: add option to not key first/last frames of an exported action.
+    
+    User request (see T45438).
+
+commit 3d0f53c1d65f3a55d108f25b1ee8f391ef323910
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Tue Jul 14 20:49:48 2015 +0200
+
+    Fix T45426: fbx exporting animation of 'noise' produced by float precision error.
+    
+    Looks like our absolute max diff in animation simplification process was a bit too low,
+    raised it from 1e-6 to 1e-5, fixes the issue in reported file at least.
+
+commit 2f6c86c461c9974db22a775a4ab4db6deb9fc061
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Sun Jul 12 12:41:14 2015 +0200
+
+    FBX IO: Atempt to fix camera/lamp orientations issues.
+
+commit db79c2aa5eed872e44f8462cfbc793011b4a8162
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Sun Jul 12 12:40:24 2015 +0200
+
+    FBX Import: Add option to not import custom normals.
+
+commit 3b9704930864a72e399341c3f685e8879a79340a
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Sun Jul 5 15:34:54 2015 +0200
+
+    Fix T45322: 'force connect' bones not working correctly with leaf ones when 'remove leaves' option is set.
+    
+    Also, refined the whole 'force connect' behavior, such that bones having several children also get their
+    tail position adjusted to the average children head positions.
+    
+    This shall finalize our support for 'point-only' based armatures.
+    
+    And to think that original FBX had a real bone-type armature... :'(
+
+commit a740fe7547fc74faab78b1a155b52f653c041868
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Fri Jul 3 17:14:29 2015 +0200
+
+    FBX Import: Fix (unreported) embeded images not always loaded.
+
+commit 7937fe22df4a5fcfa931281aba1dfa05bb0ea4a1
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Fri Jul 3 16:54:26 2015 +0200
+
+    Fix T45291: empty bytes/string nodes seems to be valid... *sigh*
+
+commit f2e21eb478145ca0bbd2e69aaf43a7c7cd0bb1d6
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Mon Jun 29 17:40:57 2015 +0200
+
+    Fix for 'load_modules' test.
+
+commit 0c3c1d569e73288e6eefddf1789309cb101e6b31
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Mon Jun 29 13:11:59 2015 +0200
+
+    FBX import: enhancement related to T45157: do not force-connect children when
+    there are several ones with different 'head' positions.
+    
+    Also, fix a minor bug from previous 'multi-armatures for a single mesh' commit.
+
+commit f5f7b1df1a6b304bf1daf8147afbe2074b8eef7c
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Sun Jun 28 17:35:01 2015 +0200
+
+    Fix T45171: FBX importer can't handle mesh bound to multiple armatures.
+    
+    There were two issues here:
+    
+    I) Since an object can only have *one* parent, it it gets created only during its parent's creation,
+       we could end in situation where we would be creating an armature that would need its 'fake' children
+       mesh objects, before we have actually created this mesh object (which would only happen during creation
+       of the only armature that would be its *real* parent).
+       This was solved by decoupling object creation/instancing and creation of objets' relationships.
+    
+    II) We were only storing one set of binding data (matrices) per mesh, which obviously failed when
+        binding several armatures to a single mesh.
+        Simply fixed by storing one set of binding data per mesh per armature.
+        FBX can store on set of binding matrices per mesh per bone, but this is not supported by Blender!
+
+commit 8c41091be72ecbbf5b14d85b0c11a90dcc98db8b
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Fri Jun 26 19:07:47 2015 +0200
+
+    FBX import: add a setting to define a custom animation offset value, in frames.
+    
+    In theory, Blender's animations start at frame 1, while FBX ones start at t0,
+    but looks like users need tweaking ability here too! ;)
+
+commit 107df683a03280ed9cdeb329b7766bef2943991c
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Wed Jun 24 20:12:59 2015 +0200
+
+    Fix T45176: FBX import - mismatch in camera rotation (bad rotation order).
+    
+    Somehow our mapping from FBX int 'enum' code to string representation of rotation order
+    was pure nonsense, only giving correct result for default 'XYZ'.
+    
+    Note that we fallback to EulerXYZ in case of 'SphericXYZ', not even sure what this is!
+
+commit d2aa512ae8b1b326f41616a4109e7dadb36bd9d5
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Tue Jun 23 12:59:21 2015 +0200
+
+    Fix T45157: FBX Import could do with better bone alignment in pure-joints armature case.
+    
+    Note that, since I do not have any skinned zero-aligned bones FBX file at hands, I do not
+    know whether this option breaks skinning or not (hard to predict, we are playing with
+    at least four different matrices/transforms here)... Time will say.
+
+commit ffaddb3a6f59dc9a2177c27391c8fd8444af3257
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Mon Jun 15 21:10:06 2015 +0200
+
+    Final step (hopefully) in unit/scale Hell.
+    
+    So, it appears some importers (at least UE4) do not use UnitScaleFactor defined by FBX,
+    which is assumed to be a way to say 'this FBX file uses units n times default FBX unit'
+    (default FBX unit being centimeter - afaik, at least I saw some FBX from Max with a
+    UnitScaleFactor of 2.54 - inches).
+    
+    Hence, we have to add yet another stupid option to apply that 'unit scaling' to objects
+    instead (as part of global scaling)... Hurra.
+
+commit 02b82c4fc10d1755fb3176b2aae66d060eea6015
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Mon Jun 15 16:34:57 2015 +0200
+
+    Again forgot to raise version count...
+
+commit 15ec348c417d7fc7dd47216d55b1b16926cb67e4
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Mon Jun 15 16:31:12 2015 +0200
+
+    Fix T45080: Scale of exported .fbx is wrong in 2.75.
+    
+    Man... this scaling issue becomes ridiculous!
+    
+    Tried to fix it again also regarding (what is supposed to be) FBX scale/units handling.
+    Since we store Blender's unit system (with 1BU == 1m in case of none) as the UnitScaleFactor
+    element, we actually *do not* have to also scale objects themselves... In theory.
+    
+    Since I have to wait hours here to get my UE4 repo updated and rebuild the monster,
+    comitting this now, we'll see later for FBXSDK behavior.
+
+commit 6fccd8c57cca34ab2a78f5e86f963b7569993515
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Fri May 22 22:23:10 2015 +0200
+
+    FBX Import: fix scale handling to match again our exporter's one.
+    
+    Still unsure we are doing the 'right' thing here, but at least let's be consistent
+    between our importer and exporter!
+
+commit 7d4c4744b1134af469f8ef6d95c6a3781eed50e3
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Fri May 22 22:06:56 2015 +0200
+
+    FBX export: do not embed a same file more than once!
+
+commit 5a7cd7d9b3f7f284ef54be27291d876a999bf48f
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Fri May 22 21:25:28 2015 +0200
+
+    Attempt to fix T44442: Avoid '.fbm' dir creation by not creating empty 'Content' elements.
+    
+    This sounds suspicious to me, but it’s FBX, so could be the solution, we'll see...
+
+commit 87e95103c5165634eead5e6a2cdb7c68079f26db
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Tue May 19 15:42:24 2015 +0200
+
+    FBX Export: Hopefully fix once and for all default scale issue.
+    
+    Now, we consider default BU as 1 meter (100 FBX units), instead of 1 FBX unit (1cm)...
+
+commit f30fc86ab552f193b891bbb68317b0c123e73b75
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Tue May 19 14:47:37 2015 +0200
+
+    Fix T41605: FBX Export: scale issue with animated armatures.
+    
+    Yes... 10h of work, for a oneliner fixing a simple stupid dummy missing connection
+    between the empty used as armature 'object', and its (void, useless) 'NodeAttribute' data...
+    
+    Why such basic harmless error breaks something (aparently) completly unrelated
+    - and why is it breaking anything, btw - is to be added on the Olympus Mons of FBXSDK madness.
+    Not to mention the usual total lack of parsing warnings/errors from that 'thing'.
+
+commit a4231350950136996af8981bceebb8180110756f
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Tue May 19 12:50:22 2015 +0200
+
+    FBX export: Do not write skinning weights/indices if empty.
+
+commit 0136e9077946a4db81506d0b89f2681ba3b1073f
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Mon May 18 20:20:26 2015 +0200
+
+    FBX export: angles are in degrees in FBX (*sigh* again).
+
+commit 91976e77c322b95fa29544a81dd46c3008facddd
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Mon May 18 17:58:12 2015 +0200
+
+    FBX export: more twisting and co to attempt fixing scale/animation issue, still failing.
+
+commit 717c062b5ed2237206c21b1bff9cc438f76ae358
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Mon May 18 16:31:52 2015 +0200
+
+    Minor cleanup, no need to add more lines than needed, we already have way too much in this addon.
+
+commit 3033cad98ebcb67ead5228d8380ec1c42d50ef1e
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Mon May 18 16:29:41 2015 +0200
+
+    FBX export: fix various minor issues (compared to 'official' exports).
+    
+    Trying to fix the ugly scaling issue with FBX and animated armatures. No luck so far,
+    all those changes make our generated file closer to those generated by 'official' FBX apps,
+    but does not seem to fix or solve anything...
+
+commit a2c685584d00c1f25dd2f119ad51ef4a9d94ee0f
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Mon May 18 14:51:30 2015 +0200
+
+    Fix json2fbx.py import
+
+commit 3b6028fd8b895dcc42b23e481fd8d99c10553acd
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Sun Apr 26 14:47:40 2015 +0200
+
+    Fix T44386: FBX export with 'all actions' enabled was a bit too much enthusiast.
+    
+    It would export animations from all compatible actions - even for objects that were
+    actually not animated at all! This would lead to undesired behavior esp. for
+    simple objects scenes with only one or two animated.
+    
+    Now we only export all compatible actions for a given object if it is actually
+    animated.
+
+commit ab7af1cd008cca599bd146ca497f38932e2ebd03
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Sat Apr 18 11:41:04 2015 +0200
+
+    FBX IO: More visible warning that 'apply transform' is experimental!
+    
+    People do not read tooltips it seems...
+    
+    Would not mind a big red flashing message even, but fear UI mafia would not be happy.
+
+commit 8366db568607ec20a5f087d3a156d2d4dd4f8f89
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Tue Apr 14 15:33:52 2015 +0200
+
+    FBX IO: fix related to T44386: do not add again and again same material to a mesh on import.
+    
+    Issue here is that FBX assigns materials by objects, while in Blender it is by default assigned
+    to meshes (obdata). This becomes critical with tons of objects using the same mesh (as generated
+    e.g. by exporting from Blender's dupliobjects).
+    
+    We may add an option later to assign materials to objects too, but meh... We already have tons
+    of options in FBX. :|
+    
+    Also, added some timing/steps reporting in console, helps seeing io process going on,
+    and spotting stupid issues like this one!
+
+commit 73bf474a6df0d2ad6524da9449b01a02620b669f
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Fri Apr 10 11:43:35 2015 +1000
+
+    Cleanup: imports (formatting)
+
+commit 94aa8ae3a2433f0fe0fcf81ae1b3c98df980bbc8
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Thu Mar 26 08:40:49 2015 +0100
+
+    Fix T44131: FBX Export: During animation baking, code could try to set readonly properties.
+
+commit 026f3654b9a3257a24f9040d9952a8a4db2cb842
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Tue Mar 24 21:37:11 2015 +0100
+
+    Minor UI message fix.
+
+commit 1f43f9076360103027d40f2a62a22621ffa50351
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Tue Mar 24 16:29:23 2015 +0100
+
+    Fix T41719: UE4 - Blender FBX Export to Unreal Engine 4 Bone Translation Error.
+    
+    Well, not exactly a fix, since the buggy behavior from FBXSDK side makes no sense to me.
+    
+    So it's rather a hack to make that stupid piece of junk happy - now you can (optionally,
+    but ON by default) force exporting anim keys for all bones of an armature.
+    
+    Should be safe for 2.74, just adds a new option, cannot see how it could break existing stuff.
+
+commit 812130fd0b0a54df16f233e78af176868e8deae6
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Tue Mar 24 09:59:35 2015 +0100
+
+    Fix T44089: restore default orientation axes of each addons to stae before rBAbfbabc0592b8.
+    
+    Now using a class factory to allow customization of those defaults axes, still way less
+    verbose than previous code!
+
+commit e716a3503d0e4ece893d42e394e684ebce90ea4e
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Sat Mar 14 12:05:12 2015 +0100
+
+    Fix T43979: FBX Animation import regression.
+    
+    To be backported to final release.
+
+commit c840ce418476ace6d86fcf7751f309c026ff49d2
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Thu Mar 12 10:21:45 2015 +0100
+
+    Fix T43929: Exporting a mesh with shape keys as FBX with smoothing, creates invalid file.
+    
+    Stupid libfbx crashes when there is no normals in 'main' mesh data, and some shape keys linked to that mesh.
+    
+    Now, issue is, I removed always writing normals because iirc this was giving bugs
+    with some importers... Re-enabled it for now, let's hope everything works OK.
+    
+    *do not backport this* to 2.74!
+
+commit 3fc5b82c6bdba2f9c954fbf497621b9bb794a1bc
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Tue Mar 10 19:42:22 2015 +0100
+
+    Fix T43954: New FBX Importer resets UVs of imported model.
+    
+    Pretty stupid, UV/VCols were passed as a copied list instead of direct blend data.
+    
+    Not sure there was a reason for that, but now it was seriously conflicting with
+    new advanced behavior of that code (to allow complex per vert/face/loop normal import
+    into clnors)...
+
+commit 660f2dd8bb95a1f50158b584ad54b634b65aec4a
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Mon Mar 9 11:46:21 2015 +0100
+
+    Fix T43935: FBX: Coordinate system axes exported incorrectly, resulting in a 180 degree rotation of meshes.
+    
+    Issue found, investigated and fixed by ib_rod (Rod Boyd), thanks a bunch!
+    
+    And again, a special mention to the "quality" of FBX doc (even on official API level)...
+
+commit 5fa6984635fcf998db556348b0a8450d5e3d1297
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Fri Mar 6 11:57:52 2015 +0100
+
+    FBX: fix 7.4 exporter tooltip.
+
+commit ffb9eb7eda6961af0e76fcaf81199183da55812c
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Thu Mar 5 20:52:44 2015 +0100
+
+    Fix T43899: FBX and OBJ importers after new RNA API 'cleanup'.
+    
+    Caused by rBc755d8fbb520fbcf2a, can understand we want a 'good' (sigh) naming
+    before release, but please ensure code already using it is updated then...
+
+commit 11e9bba2ff6110f370dda7dd7651c2bd45ad3458
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Thu Mar 5 08:32:10 2015 +1100
+
+    avoid double lookup for library attr
+
+commit 381c6e3125500c6bcdf005aca2873501696f62bd
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Wed Feb 25 19:31:42 2015 +0100
+
+    Fix T43812: Not all blender objects have a 'library' member...
+
+commit dbf6ce9318fd19f6e579569ed9f3480ede6c576f
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Sun Feb 22 10:23:05 2015 +0100
+
+    FBX import: also import 'polygon' normals as custom lnors.
+    
+    Some FBX files store their normals as polygon ones (flat shading...).
+    
+    Note this code becomes a bit messy, will need some cleanup!
+
+commit 31e93af167e38459e9e34c041f14e3107feee8af
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Sat Feb 21 00:37:16 2015 +0100
+
+    FBX import: Add some support of (custom!!!) Max property names for materials.
+    
+    Patch by juicyfruit (Martijn Berger) with own minor edits, thanks!
+
+commit 0bfa31efd96f0c213f67446631ee13c7574e1e42
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Fri Feb 20 12:10:32 2015 +0100
+
+    FBX import: minor fixes (mostly, could try to load an image with None path...).
+
+commit 17ba3bcbda12a673dbdb178ece308d75ed4faf8a
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Wed Feb 18 16:39:53 2015 +0100
+
+    FBX importer: minor fix to normals import code.
+
+commit de7d0111100f33ecdae039ea218201b4230038b0
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Wed Feb 18 13:00:13 2015 +0100
+
+    Fix T43718: FBX: Do not 'crash' importer when there is too much data in a layer.
+    
+    FBX... Looks like even using the SDK does not avoid many mistakes (I would suspect the countrary, actually).
+
+commit 17a28df49c35da5670c2964f29f0768d650a1d0a
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Tue Feb 17 15:06:05 2015 +0100
+
+    Fix T43707: FBX 7.4 Binary Exporter replaces all meshes with the same name when working with linked libraries.
+    
+    Now take libname (lib namespace) into account when generating ID's name or key...
+
+commit c2c407ad6264b5bf5dc2ac4e795b3e5c632a49b8
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Wed Feb 11 12:17:54 2015 +0100
+
+    FBX export: Rename 'Off' smoothing option, stupid name really from user PoV...
+
+commit 95633e7f1b1bb40f058cbb6d7ed0d7afd1512a24
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Mon Feb 9 20:54:57 2015 +0100
+
+    Fix T43582: FBX IO: Handling of 'smooth edges' was rather flacky on both export and import.
+    
+    On export, we also want to tage as sharp edges from flat faces, and edges shared by more than two faces.
+    
+    On import, we want to tag all faces as smooth and enable autosmooth, when we only have smooth edge data...
+
+commit 1c602ef7b58ac1e06098e82ce99e4fd82878351a
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Fri Feb 6 16:24:35 2015 +0100
+
+    Fix part of T43582: Importing Custom Normals with FBX fails.
+    
+    Mess in filename props ID.
+    
+    Thanks one more time FBX for your beautiful demonstrations of pure logic insanity...
+
+commit a00934e26c465da8cccfc129fff97e49c0e2f394
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Fri Jan 23 17:41:51 2015 +0100
+
+    FBX import: add support for custom loop normals.
+
+commit fa3b54a975fd4204ffe9ad502b1f4b4035219260
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Wed Feb 4 15:38:52 2015 +0100
+
+    FBX import: fix for previous change to `elem_find_first_bytes`, add new `elem_find_first_string_as_bytes`, and remove exception for AllSame mapping...
+
+commit 6a090568c38e4fe6d6d096681de59ca940a054ba
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Wed Feb 4 15:18:13 2015 +0100
+
+    FBX import: tweak a bit image/texture loading (e.g. try to use relpath first), add support for embeded images.
+
+commit 80e4d25bfb79b07f38f32818885d6c5886e5e7dd
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Wed Feb 4 14:44:45 2015 +0100
+
+    Minor import fixes (wrong string/bytes prop handling, previous fix re meshes was a bit too aggressive, forgot lamps, cameras & co).
+
+commit a72a199986162d900bbfd9454e7a6faec3a44a77
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Thu Jan 29 21:35:10 2015 +0100
+
+    Fix T43453: FBX Import: missing geometry with some messy FBX files.
+    
+    Always expect FBX to do stupid things, and hence try to armor against it
+    with deterministic handling of data...
+
+commit 20e4c8056c3c7f107169c80e4fd7b316acc7747d
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Sun Jan 25 12:37:07 2015 +0100
+
+    Fix T43279: FBX exporter would fail on 'used' valid texslots with None texture.
+    
+    I’m quite not sure whether such a situation is supposed to happen, but does not hurt
+    protecting against it anyway.
+
+commit ad42925185027a5466e4ed1773848ade4def054e
+Author: Sergey Sharybin <sergey.vfx@gmail.com>
+Date:   Wed Jan 21 01:40:15 2015 +0500
+
+    FBX: Correction to the relative paths import
+
+commit 659fec7c5de2afb748cb8c1107a30afe0da65986
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Mon Jan 19 16:38:39 2015 +0100
+
+    Update re `mesh.calc_normals_split()` changes in master.
+
+commit 7a56d60eebbbb18ac8912a9869c342a5cbba7b18
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Thu Jan 15 00:01:04 2015 +1100
+
+    rename IOHelperOrientation -> OrientationHelper
+
+commit bfbabc0592b820ec948fa355805ed78a882f4943
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Wed Jan 14 13:08:57 2015 +0100
+
+    Use new IOHelperOrientation class to handle forward/up axes.
+    
+    Helps ensuring common behavior, and saves quite a few lines of code, too...
+
+commit df244023da0a436a1f71d6412f32ab39a72ad641
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Tue Jan 6 21:33:01 2015 +0100
+
+    Fix T43148: FBX Export: Ignores auto smooth angle.
+
+commit ab834eb7555a3d26fcd0f1f378ec63afa1a10d3b
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Tue Jan 6 21:11:59 2015 +0100
+
+    Fix T43141: FBX import issue with rigged character.
+    
+    This report actually showed two different issues.
+    
+    First, handling of bind poses was basically useless trash. Blender does not
+    have any real concept of bind pose, it uses parenting instead. So what we really
+    need to do here is set matrix_parent_inverse according to bind matrices of armature
+    and mesh.
+    
+    Second, mighty FBX actually has *two* different transform models (which combine into
+    a nice monster using 13 matrices...). Added details in (huge) comment, but short story
+    is FBX uses by default Maya tx model, but can also store Max one, which uses some kind
+    of local diff additional transform (similar to our dloc & co I think). So had
+    to add support for that too, which makes our code even more light and beautiful!
+    
+    Note those 'geometric transformations' might entertain us again, quite not sure I
+    caught all cases where we have to take them into account. :/
+
+commit 2b1026150c5943c02c80422f1f33976a80977c36
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Tue Jan 6 21:02:14 2015 +0100
+
+    FBX import: Cleanup.
+    
+    Shorten some too long lines, factorize some imports on top of file (!!!),
+    also done a few optimizations in some places where code was rather stupid.
+    
+    Nothing expected to change in behavior in this commit!
+
+commit 1068cf3057c0a1cd3a60d53722f6d20856eace8a
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Sun Jan 4 14:45:43 2015 +0100
+
+    FBX import: Fix two stupid errors in recent reaftor, breaking mat idx import.
+
+commit 08846e0aab9a8e870e1c2d6cb9a7a0fa147dbb23
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Fri Jan 2 14:42:13 2015 +0100
+
+    Fix T43095: FBX import: refactor mesh 'layers' handling.
+    
+    As usual with FBX, 'official' doc of SDK says one thing, actual FBX files
+    produced by 'official' apps say something else.
+    
+    This time, it’s about mapping types - looks like it is actually 'valid'
+    to have layer arrays shorter than actual number of relevant geometry elements (verts, edges, etc.).
+    
+    Don't know how the SDK handles those case, for now we simply stop filling blen's data layers
+    once we have reached the end of fbx data layer's array.
+    
+    Since I was messing with this code, I also refactored it a bit to make it more generic.
+    Also removed some optimization (like when stride is 1), we loose a few percents of speed,
+    but nothing critical, and code is much cleaner and generic now.
+    
+    Only had to keep one exception - seems common to have Poly data with 'IndexToDirect'
+    mapping without any mapping data - ***sigh***!!!
+
+commit e74212473cd0fdf9fcf0f50a78a7bf8731d7f4b5
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Mon Dec 29 15:36:08 2014 +0100
+
+    FBX export: Update to use correctly new Object.matrix_local
+    
+    This matrix is finally really local to the parent, no more only to the parent object.
+    
+    Only working with master rBfb7ff31315a1 and later.
+    
+    Also, fixed some missing matrix copying...
+
+commit e22da49ade4789cc6c39a78cc8fb0504ededa791
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Sun Dec 21 12:52:06 2014 +0100
+
+    Fix T42975: FBX export: Do not export empty groups.
+    
+    Thanks to Squashwell (Harrison Nordby) for org report and patch.
+
+commit 665b1a4113bc5a0cf918527b8659d2667e93caf9
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Sat Dec 20 14:20:23 2014 +0100
+
+    Fix T42912: FBX export: Parenting to bones was broken.
+
+commit c0e016dd83a243cb082b21d7477469719f0c9692
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Fri Dec 19 12:48:49 2014 +0100
+
+    Fix importer adding needless empty to armatures.
+
+commit 6bc837db2cc73323311f234b2ff2bbc1fc7063ec
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Fri Dec 19 12:12:35 2014 +0100
+
+    FBX export: Fix stupid own error regarding matrix_parent_inverse...
+
+commit 7121beb02ea45674045b668d0bdfade89781225c
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Fri Dec 19 11:14:58 2014 +0100
+
+    FBX fix: only considered an object as deformed by an armature if parent type is 'ARMATURE'!
+
+commit 6454d95e19d4d99c680448f3bf124a8f7fb0842e
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Fri Dec 12 11:02:03 2014 +0100
+
+    Fix T42683: do not crash on importing trashy FBX files.
+    
+    Looks like FBX allows corruption in its 'database', like UIDs
+    only existing in Connection table, and just ignores it. When in Rome...
+
+commit f9a39c7e1d6efd0104eba81e1f1c1d34e37f54d6
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Thu Nov 27 09:34:02 2014 +0100
+
+    Fix T42730: FBX Binary Export - last frame of animations was not exported.
+
+commit b83c1181425040f1e10d0826bb8e218ed8ee938a
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Thu Nov 20 19:44:17 2014 +0100
+
+    FBX Import: Long time request/todo: assign first read action to object automatically.
+    
+    This does by no mean handle complex setups, but most common basic situations
+    should be read correctly, and it's much more user-friendly!
+
+commit 4a27fce1d15e989dc6fef33d8e68d44bb2d67e75
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Thu Nov 20 16:04:06 2014 +0100
+
+    FBX: Consistency with previous commit/fix, export armature objects as 'Root' FBX nodes.
+
+commit f41378dc7573b1adec3b0f72a6439a7fc6d073e9
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Thu Nov 20 16:02:52 2014 +0100
+
+    Fix T42482: FBX import issue when scale is not 1.0.
+    
+    Looks like FBX's 'Root' bone is same as our armature object?
+
+commit 765c84e507cc3c5ca7d788bf4de819ad8b1206a7
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Thu Nov 13 14:51:21 2014 +0100
+
+    Fix T42586: Error when attempting to export FBX (non-invertible matrix).
+    
+    Just use 'new' inverted_safe() everywhere we are not 100% sure the matrix is invertible...
+
+commit 0ce975d0802e18cea5d7ec5e2f0536df886e4a2e
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Sat Nov 1 15:34:20 2014 +0100
+
+    Fix T42410: FBX Import: in **some** cases, se have to ignore pre/post rotation to get valid result.
+    
+    Yet another big breakthrough in FBX fantastic transformation handling! And yet another
+    hacking parameter to get things imported better.
+    
+    Anyway, many thanks to artgolf1000 (Mingfen Wang) for finding that hack!
+
+commit 3aea888cf89b676760a171b88c548492fe75f129
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Mon Oct 13 20:50:19 2014 +0200
+
+    FBX IO: Cleanup in UI messages...
+
+commit 9edfa1364971d41424644ad9499f80187ebaa553
+Author: Philipp Oeser <info@graphics-engineer.com>
+Date:   Mon Oct 13 15:55:26 2014 +0200
+
+    fix warnings with UI description
+
+commit 811c2b12bfcdd539ca5855cb71bc7daa5f33c54f
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Sun Oct 12 09:27:52 2014 +0200
+
+    Fix T42190: FBX - script error when trying to export an animation without leaf-bones.
+
+commit 6d0d31a1e272549f5770e314ae54163e39efa89b
+Author: Antony Riakiotakis <kalast@gmail.com>
+Date:   Fri Oct 10 12:55:14 2014 +0200
+
+    fix warning with UI description
+
+commit c8da8674d0a0a636caaff5fc426906da7b6e8c36
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Thu Oct 9 14:13:29 2014 +0200
+
+    FBX Export: minor tweaks.
+    
+    * Only export global animation if neither NLAStrips nor AllActions options are set.
+    * Do not prepend '_' to groups' filenames in case of batchexport with no prefix given.
+    
+    Requested by Mango Jambo through mail.
+
+commit 00d84a2cb55a3244027fd6609ff7f1e4bf3eec3d
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Thu Oct 9 13:03:35 2014 +0200
+
+    Fix T42135: FBX Exporter Armature not linked to mesh.
+    
+    This time, it was exporter that did not support bone parenting of mere objects.
+    
+    Also fixes a more general bug about parenting - matrix_parent_inverse
+    was not taken into account at all for child objects!
+
+commit ac6ed35bb1c6f25003816dbbe75793f0a972c514
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Thu Oct 9 10:39:40 2014 +0200
+
+    FBX Export: Fix typo in previous commit.
+
+commit 4a07e805addbe606d80223811d6d29c68579b603
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Wed Oct 8 15:33:56 2014 +0200
+
+    Merged experimental code in 'stable' addon (mainly Jens Restemeier's summer work).
+    
+    Will remove experimental one soon. Keeping old 6.1 exporter active for now, though.
+    
+    Notes:
+    * Not 100% happy with how complex code is now... Rather sure though refactor would
+      take a huge amount of time, not worth it for now.
+    * New code handles things like armature & animation import much much better than previous one,
+      so definitively worth it.
+    * New code also fixes some real bugs (like Blender-side of T42135).
+    * Did a few cosmetic changes on the run, nothing serious.
+    
+    This should make FBX work complete, aside from a few nice TODOs that I'll tackle in comming weeks,
+    in addition to ongoing bugbusting.
+    
+    Many thanks to Jens for his work on armature mess! :D
+
+commit 3d5cd1956ef4cc323037d103ca74d10a97ebef78
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Sat Oct 4 16:20:59 2014 +0200
+
+    Fix T41922: FBX exporter causes crashes in other software when smoothing groups are active.
+    
+    Do not say we have a normal layer when we do not!
+    
+    Also, warn users about the fact that applying modifiers implies loosing all shape keys.
+    That later point may be addressed ultimately, but not easily. :/
+
+commit c210f87f12929bbd0884db7bf76baa3f1eed7b02
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Fri Oct 3 14:47:22 2014 +0200
+
+    Fix T41931: FBX export: 'Group' batch export was using default scene unit scale.
+    
+    Now, find the scene most 'used' by exported group elements, and use its unit settings!
+
+commit 5be03a4071edc59968e2cd58ab241c0e2e79ba52
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Fri Oct 3 12:58:10 2014 +0200
+
+    FBX export: fix a strange bug where 'return a_list and a_bool' could return a_list instead of a bool?!
+
+commit 34998c87c0baf8c502c34ff5526d72c57f8821a9
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Wed Oct 1 08:56:09 2014 +0200
+
+    Fix T42029: FBX export: armatures linked to mesh only through modifier were not exported correctly.
+    
+    Now also check modifiers stack.
+
+commit 77618baacd0df1414943a082ca3deea2892e3750
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Wed Oct 1 08:32:39 2014 +0200
+
+    Grr, fix for previous FBX commit.
+
+commit c58170fbe21e23f54c0217bc9d4fba9046b8fde0
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Tue Sep 30 14:46:51 2014 +0200
+
+    Fix T41999: "bake transformation" feature was not implemented for shapes.
+
+commit fd695c3a81b63db072311e8516e0dbb8d4474047
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Fri Sep 19 14:50:59 2014 +0200
+
+    FBX IO: Better info in header about blender & addon versions used to generate the FBX file.
+
+commit c5bc1f6da7199a89fd8af893dec210343bf6116d
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Fri Sep 19 14:36:15 2014 +0200
+
+    FBX IO: Cleanup: fix stupid typo in func name!
+
+commit f7ef101d09b0bdb34f88629f0feab5af6d274b43
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Fri Sep 19 14:31:17 2014 +0200
+
+    Fix T41766: FBX (binary) exporter does not export actions with one frame animations.
+    
+    When we are exporting actions or strips from NLA, and an evaluated anim leads to no anim
+    at all (like single-keyed actions or pure static ones), key all start and end frames.
+    
+    Note this might be overkill (due to baked anim, we will key *all* transform channels),
+    but probably better than skipping completely those actions!
+
+commit aeb4cb010eb497e3c511edcad05e8d8831a1ca12
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Sat Sep 13 18:40:32 2014 +0200
+
+    Fix T41808: FBX exporter does not properly position and rotate group instances
+    
+    Forward/Up axes to FBX system was still wrong. Not happy with finding such issue
+    at this stage of development. :/ Hopefully now we are OK (at least, checked
+    all orientations with same basice file in Unity, all were imported OK).
+
+commit f539dbf1906eeb2ef0ddc0d4b8f109e5a8f84d90
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Sat Sep 6 16:05:00 2014 +0200
+
+    Fix T41712: tris, do not allow zero-length bones.
+    
+    We now this has to be rework completely anyway, but until then, better to avoid crash!
+
+commit 1ba40272a0b72edf9ce6ad36ffdb8eefaa3ef57c
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Sat Sep 6 15:06:36 2014 +0200
+
+    Fix T41712: bis - we can run into some cases where objects or bones have degenerated
+    matrices, so better to use inverted_safe() in those cases.
+
+commit 5adfe7b7a8fb1cfc8de7e24a8ac952c970031ada
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Thu Sep 4 15:22:05 2014 +0200
+
+    Fix T41712: [FBX Importer] Does not impor fbx model
+    
+    An anim curvenode may be linked to root node it seems? Pffff...
+
+commit 9e1ed35b776cac4952facc36f42c3a5bb02310cb
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Thu Aug 14 17:55:40 2014 +0200
+
+    FBX IO: Minor changes/fixes to cameras.
+
+commit 3691bf0026f841bf5d69d463d03d8d332a9f5667
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Thu Aug 14 17:28:23 2014 +0200
+
+    FBX export: Add empties to list of 'bakeable' object types (since in that precise case
+    orientation of empty itself does not really count, as long as children are OK).
+
+commit 3365561271fd45755599192f9cf9f75535b45622
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Tue Aug 12 12:04:24 2014 +0200
+
+    Grr, yet another FBX export material fix, hope this is the last!
+
+commit 28a69aaac4be32a07023a2347ad8fe2dab37d9e5
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Mon Aug 11 20:31:12 2014 +0200
+
+    Fix T41405: FBX export issue with 2.71.3 Hash: ee8dafe.
+    
+    Own mistake in previous smoothdata vs normals fix.
+
+commit e35de9d174291adab3b28ba660962dc0b084d9d3
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Mon Aug 11 16:23:47 2014 +0200
+
+    FBX Export: export dummy default material instaed of nothing, when handling
+    unsuported mat type (like nodal ones).
+    
+    See T41396 for rationals (having dummy placeholder still helps e.g. with
+    face-assigned materials...). Thanks to piiichan (Arnaud Couturier) for raising that issue.
+
+commit 07747bcf64963eefaff8aaa9cee24ed652fda5b9
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Mon Aug 11 13:03:43 2014 +0200
+
+    Fix T41396: FBX export fails with some very simple material setups.
+
+commit 544a5a6d80ca167cac3e8b5c47aad8bdd20eaf5e
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Sun Aug 10 18:00:08 2014 +0200
+
+    FBX export: add support for ortho cameras.
+
+commit 8da39736e2f4f11d44a84f30c07f008a8ec5316e
+Author: Jens Ch. Restemeier <jens.restemeier@gmail.com>
+Date:   Sat Aug 9 21:49:41 2014 +0200
+
+    FBX IO: Fix wrong orientation of lamps (were rotated 180deg).
+
+commit c9cde56179ce50605822eac25b4979c911feffe6
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Fri Aug 8 20:09:16 2014 +0200
+
+    Fix T41316: FBX exporter in Blender cause artifacts to appear on meshes with Shape Keys.
+    
+    For some reason, Unity (and FBX SDK in general?) does not support well mixing
+    normals and smooth data, at least when using shapekeys.
+    
+    Odd, odd, you said odd? That's odd...
+    
+    Anyway, we do not really need both of those data at the same time, so for now
+    either write smooth or normals data, not both!
+
+commit c2d1f06c06097965abdb00bcda557704d917dd19
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Mon Aug 4 12:22:22 2014 +0200
+
+    FBX: Add 'fbx2json.py' utils to convert binary FBX files into readable JSon ones.
+    
+    From Campbell's repo.
+
+commit 53d4d407289045dc45fa7028a2df5b97fef49c1c
+Author: Jens Ch. Restemeier <jens.restemeier@gmail.com>
+Date:   Thu Jul 31 22:15:57 2014 +0200
+
+    FBX Import: Various minor fixes:
+    
+    * Fixed error when importing bone attributes without Properties70 child.
+    * Fixed error when creating alpha material (missing tex_map parameter).
+    * Added support for bone-parenting.
+
+commit a9c73ba7bd0531b78a9c3238af539e95b01ae032
+Author: Jens Ch. Restemeier <jens.restemeier@gmail.com>
+Date:   Thu Jul 31 22:13:52 2014 +0200
+
+    FBX importer: Fixed infinite loop in animation importer.
+    
+    This will need a cleanup when adding proper support for spline animation curves.
+
+commit c2dc0f78b9f9e26d29c89596089b06ff0b6364ac
+Author: Jens Ch. Restemeier <jens.restemeier@gmail.com>
+Date:   Thu Jul 31 22:09:04 2014 +0200
+
+    FBX Import: add support for custom properties
+    
+    Also add support for 3DVectors as custom properties in exporter.
+    
+    With some minor edits by ideasman42 (Campbell Barton) and mont29 (Bastien Montagne).
+
+commit b9ba1a9c8ca2f06153c26981003bcccb51d0f006
+Author: Jens Ch. Restemeier <jens.restemeier@gmail.com>
+Date:   Thu Jul 31 22:03:46 2014 +0200
+
+    FBX IO Cleanup: add a global settings namedtuple to importer too, and rename those used by exporter.
+    
+    With some minor edits by mont29 (Bastien Montagne).
+
+commit 8ab7b3092c4c5919cc5d0a5c855ad1c083103d7d
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Thu Jul 31 21:52:26 2014 +0200
+
+    Cleanup: pep8 (to some extent :/ )
+
+commit dce0ada8550326e919a30cba04421b161db94634
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Wed Jul 30 15:37:33 2014 +0200
+
+    Revert "FBX import: do not fail on missing/unreadable image file."
+    
+    This reverts commit 21a8a5824dde50f060716047a12c748b4413b04d.
+    
+    Fiw was done at a lower level (bpy.path.resolve_ncase()).
+
+commit d0425df1ef2f868bffbe09b551c2af5213b5c67c
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Wed Jul 30 15:07:04 2014 +0200
+
+    FBX Import: Fix cornercase where some files only have one weight in case it's the same for all vertices...
+    
+    Issue found by jrestemeier (Jens Restemeier), thanks!
+
+commit 1c5da4b0b46c587de65003997e0b5bbf1aff8fff
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Wed Jul 30 14:48:42 2014 +0200
+
+    Fix T41238: FBX exporter corrupts model's pose.
+    
+    We have to store and restore pbones' matrices as well when baking animations...
+
+commit 2b27ba8d49727658f8eec1623c949ce2d7fa81d0
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Wed Jul 30 14:02:36 2014 +0200
+
+    Fix T41245: FBX import error.
+    
+    You can't swich hidden objects to Edit mode... :/
+
+commit 21a8a5824dde50f060716047a12c748b4413b04d
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Wed Jul 30 13:08:19 2014 +0200
+
+    FBX import: do not fail on missing/unreadable image file.
+
+commit 7425a27c6b3097754b91c9229dc5c43dcf9f1c4f
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Wed Jul 30 19:36:23 2014 +1000
+
+    FBX: abbreviate custom_properties -> custom_props
+
+commit 39a1b42fc34543d6bb573f4de99ffd464d504612
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Wed Jul 30 18:47:03 2014 +1000
+
+    FBX: reformat props.
+    
+    This is style/convention all over for addons.
+    Better not to re-format large blocks of code without checking with authors.
+
+commit b21415fca89f71a1a4db69c3fd1a156d644347e7
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Tue Jul 22 08:50:14 2014 +0200
+
+    FBX import: Minor optimization.
+
+commit 09c9fa9a7ba5a156cd4a8e0602aa2ff648b30fbb
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Mon Jul 21 21:18:27 2014 +0200
+
+    FBX import: add basic support for animation.
+    
+    Only objects and bones loc/rot/scale, and shapekeys' value, for now.
+    
+    *IMPORTANT* note: we currently assume all FBX anim curves are linearly interpolated.
+    This means unless you exported your animation in 'baked' mode, you should expect
+    bad results!
+    
+    Supporting advanced FBX's interpolations (Bézier-like) is on TODO, but no serious ETA yet.
+
+commit 944016ab781800d112f66b3b2900bbcc0e85f310
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Mon Jul 21 17:46:22 2014 +0200
+
+    FBX IO: Fix camera's correction matrix (based on file from T40729).
+
+commit 905f58dedb4d8a7b98a1b71510afdea84a9a97ba
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Sun Jul 20 18:53:46 2014 +0200
+
+    FBX IO: fix handling or rigged meshes transformations.
+    
+    We have to convert them to global space on export, and back into local space on import...
+    
+    Issue raised by jrestemeier (Jens Restemeier) in D607, thanks!
+
+commit 1ead56feb5c354c9561c09bd55b2184634bc94d5
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Thu Jul 17 17:15:28 2014 +0200
+
+    FBX import: use new mesh's 'validate_material_index' helper.
+
+commit 9cd8795c79b798222006fddbaef138a3b5e809ba
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Thu Jul 17 15:16:30 2014 +0200
+
+    FBX export: fix dummy typo!
+
+commit 9524dbf65b33539ee2a5e30f62e9839cd3d162df
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Thu Jul 17 15:07:49 2014 +0200
+
+    Fix T40719: FBX exporting armature but changing the bone name.
+    
+    Not sure exactly why this is such an issue, but remove armature name prepend for bone names...
+
+commit 272b809317696fbdf6cee608767bbbe83a879488
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Sun Jul 13 18:33:02 2014 +0200
+
+    FBX import; add support for shapes (no animation yet).
+    
+    Note part of this code already sneeked in a previous commit, sorry about that. :/
+
+commit 4555427506647235ad23093f6fb0c1e9a106a609
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Sun Jul 13 18:29:28 2014 +0200
+
+    FBX import: Add static armature support (no animation yet).
+    
+    Please note following limitations:
+    * FBX 'Bones' orientation status is currently unclear - they *seem* to be -X oriented,
+      wich means they would need to be corrected (in export as well). Could not get this
+      workling yet, though, and it does not seems to bother much apps like Unity?
+      This is still being investigated.
+    * We only support 'Deformer' based skinning, not 'BindPose' one. Why FBX keeps two different
+      systems here, sometimes mixing them happily? And why BindPose has no weighting system?
+
+commit dbfb5209c007f05b4aab2afa252126f8ae8b4c32
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Sun Jul 13 18:09:48 2014 +0200
+
+    FBX Import: rework a bit transform code (this is needed for armature & anim handling).
+
+commit c6a804b9e285a99274d2f9cf22ac2c713ed58e70
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Sun Jul 13 17:56:32 2014 +0200
+
+    Simplify Export transformations handling, some other minor cleanup.
+    
+    This itegrates a small part of D607.
+
+commit 15054752be43a3b66743fcd4f9702a43c0b6a99a
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Sat Jul 12 18:37:06 2014 +0200
+
+    Fix T41015: FBX importer does not check material indices of polygons are valid.
+    
+    We have to validate this once materials are linked to meshes!
+    
+    (Knowing whether it is expected to have invalid indices in FBX data is irrelevant -
+    there is nothing valid really in this file format!
+    In this case, looks like all models have an ultimate, cryptic 'default' material
+    (only defined by some sort of ugly long UUID key)).
+
+commit 0e4f0c2ee86fc3137bca32c365719253dc365e04
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Fri Jul 11 16:29:54 2014 +0200
+
+    Fix issue in similar_values_iter() helper.
+
+commit 59ff66fa7aca6a56dfa516ee4a456428516d2c6f
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Sun Jul 6 21:49:06 2014 +0200
+
+    FBX export: rework animation handling, and add shapes animation support.
+
+commit 0abd36f1ecbe687a9a5c9d1eccac7484799145a4
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Sun Jul 6 21:08:16 2014 +0200
+
+    FBX export: add shape keys support (no anim yet).
+
+commit d994f65cc1996274b397280348cbaf91471871e1
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Sun Jul 6 19:18:26 2014 +0200
+
+    Forgot this in previous commit :/
+
+commit fbce6598ea0348a741aa689e5139d2293a1caed3
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Sun Jul 6 18:59:52 2014 +0200
+
+    FBX io: more cleanup.
+    
+    * Rework unit conversion system to avoid dict lookup each time, also use it in import;
+    * Optimize a bit by removing some double-dict-lookups;
+    * Add basic timing info to importer as well.
+
+commit a1d1012a0c4aca65e22203e7a4eb00d6c4390fc0
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Sun Jul 6 15:32:14 2014 +0200
+
+    Some minor cleanup, mostly enhance reload (F8) behavior!
+
+commit 0fadf6ce46ea585755caf80b8468d87837688541
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Fri Jul 4 15:49:26 2014 +0200
+
+    Fix own mistake in recent template commit, also add 'Other' type of geometries export by default.
+
+commit c01ed441f3baa68b41f405c6c99750f209ae7e8f
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Fri Jul 4 15:39:16 2014 +0200
+
+    Update Unity preset.
+    
+    Based on patch D629 by jrestemeier (Jens Restemeier), but removed 6.1 settings, no use of that here.
+
+commit df966fb0c54446197e5d72e0e1132ed15459c8b9
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Wed Jul 2 15:39:09 2014 +0200
+
+    Fix T40904: FBX exporter does not store parameter, which is used in FBX SDKs FbxProperty::IsValid()
+    
+    Each time I think I have reach the limits of the crappyness of this "format", it manages to amaze
+    me again! This time, looks like SDK expects always the same values in the 'templates' (Definitions),
+    else it declares properties as invalid! One would have to explain me the interest/need to write
+    those default values in the file, up to this point...
+    
+    Anyway, went over all defaults I could gather from 'official' FBX files, and replaced the few
+    ones I had change (because it was better suited to Blender's data). Hopefully it'll be OK now.
+    
+    Thanks to FslNopper (Norbert Nopper), which helped me troubleshooting this stuff!
+    
+    There is a good thing here though - it made me find how textures are linked to UVMaps
+    (by mere names, 'UVSet' property of texture nodes).
+
+commit 35d2c407eeab7ea31438d16e2189f4152fc15ca5
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Tue Jun 17 16:52:25 2014 +0200
+
+    FBX export: do not export textures from non-enabled material texslots.
+    
+    Based on patch/idea by jrestemeier (Jens Restemeier), many thanks!
+    
+    Differential Revision: https://developer.blender.org/D601
+
+commit bf38cb7252219bca1dd6c1f0361e7c37aab0f83d
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Tue Jun 17 16:25:50 2014 +0200
+
+    FBX export: always export enabled textures, even if they have a null influence.
+    
+    Based on patch/idea by jrestemeier (Jens Restemeier), many thanks!
+    
+    Differential Revision: https://developer.blender.org/D600
+
+commit 9948cd6025f29fad12eaf6d3b0e738dfb2b50d4a
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Mon Jun 9 12:15:18 2014 +0200
+
+    FBX io: add support for the 'visibility' option (though in Blender it's a bool value)...
+    
+    Idea from karanikk (Kostas Karanikolas).
+
+commit fcec7304a00de3b612c6a5435328fdfd753fecd3
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Sat Jun 7 15:35:37 2014 +1000
+
+    FBX Export: rename version so it fits in the UI
+    
+    also rename 'Bake Space Transform' -> 'Apply Transform'
+
+commit ba7f4237ef7587c1bb80fe0004d00dee83624fca
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Fri Jun 6 09:00:10 2014 +0200
+
+    Fix T40516: Binary FBX export missing deform bones only option.
+
+commit 36023a0912c7e3f3f68611b2411aa5c7b9077a02
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Fri May 23 19:29:58 2014 +0200
+
+    FBX export: Fix a nasty bug related to animation baking, that would leave matrices
+    not in sync with actual loc/rot/scale values (and hence export wrong 'rest' transform
+    of some objects).
+
+commit b20f84f6bd0c43f2ce2f4481558dfb92b2704ab8
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Fri May 23 18:50:36 2014 +0200
+
+    FBX export: Fix error with empty metarial slots!
+
+commit 39c2c2a2e5e228ceefe357b2bf0f3301f4a0d034
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Fri May 23 18:45:39 2014 +0200
+
+    FBX export: fix/enhance 'clean anim curves' code, to avoid writing curves for non-animated data.
+
+commit acf763dd4e63681d1c3da287aaf155ed86096f13
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Fri May 23 17:47:08 2014 +0200
+
+    FBX export: animcurves: no need to cheat here, we do export linear only, say it!
+
+commit db6e3acd34cdbb74b7ff10d0836316e8949b032a
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Thu May 22 14:59:18 2014 +0200
+
+    FBX export: fix some issues with 'Embed' option of textures.
+    
+    Note this needs testing still, not quite sure the result is correct yet (though it looks correct),
+    as usual with FBX (FBX Converter at least does not seems to read embedded textures). :/
+    
+    Will disable this option before release, if I can't make it work till then.
+
+commit 5bc482f647af6a3bf2e2b980108a25fa4c3ba352
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Wed May 21 13:04:43 2014 +1000
+
+    Maintenance to bl_info, remove redundant tracker URL's
+
+commit 0962e658947844d22a9ad4dc929f7792e56ee284
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Tue May 20 15:57:15 2014 +0200
+
+    Fix T40274: FBX Export: Group instances export a "No Material" material
+
+commit 29072f8d46d717d6fe6c6d43043bf36f92134439
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Fri May 16 07:46:12 2014 +0200
+
+    Fix T40216: Binary FBX exporter doesn't export proper materials to Unity when there's a modifier added.
+
+commit 1989bc2ee98052b5cb73b090c499da1fd2bbef08
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Tue May 13 14:15:37 2014 +0200
+
+    UI messages fixes.
+
+commit 031bb41901525792b37eb6764128f5f406bcb9ef
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Sun May 11 12:50:28 2014 +0200
+
+    FBX import: forgot to cleanup in latest commit, sorry.
+
+commit b54d30693cc4f297c9940d6626d30a9ea497cee0
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Sun May 11 12:32:16 2014 +0200
+
+    FBX io: better handling for orientation and scale.
+    
+    Export: generate a valid scale value from Blender scene's Scale setting (if valid, else 1.0),
+    assuming 1BU = 1m and 1FBX unit = 1cm.
+    
+    Import:
+    * Use by default axes and scale data in FBX file instead of manually specified ones (using same
+    conventions as in exporter).
+    * Also import FPS data from FBX file (crucial for future animations import!).
+    
+    And a few fixes for issues found in those areas as well...
+
+commit 9c3b825a7f8581060b706b5d3273826c9d460e6c
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Sun May 11 11:46:39 2014 +0200
+
+    Rename export_fbx_bin_utils to fbx_utils, since some of its content will be used by importer as well.
+
+commit 9102d040b053b9bd85383501a4bc580d021ddea2
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Fri May 9 21:56:23 2014 +0200
+
+    FBX export: fix armature binding broken after refactor.
+
+commit 4dacb21127a6da84ac4f52bbcd5ac36dfbf3d88e
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Fri May 9 15:07:57 2014 +0200
+
+    FBX export: split huge export_fbx_bin.py in two.
+    
+    Separate all utils and constants definitions into a new export_fbx_bin_utils.py file,
+    helps (a bit :/) to navigate in insanely big export_fbx_bin.py itself!
+
+commit 4f1fd99befe8c99305da475c69cc614540002d3c
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Fri May 9 13:19:27 2014 +0200
+
+    FBX export: Huge refactor of 'Model' part of the code, and fix exporting instances when org objects are not selected.
+    
+    'Model' data (which can be Blender Object, DupliObject or Bone/PoseBone) are now
+    wrapped in an ObjectWrapper class that present the same API in all cases.
+    Hopefully this will make that part of the code easier to follow (and maintain/troublefix).
+    
+    Also made var names a bit more consistent.
+    
+    Note all this makes export slightly slower in worst cases (many actions to check against objects),
+    about 15% it seems. But tha 'export all actions' code need some more attention, maybe it's
+    possible to enhance its performances?
+
+commit 90a19622339e1c56c8c2e27962a4a6878d2f0adf
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Thu May 8 11:45:09 2014 +0200
+
+    Fix T40091: FBX Export: Python error with dupligroups
+
+commit 6b6026be129bd83b9f51b6bf5e90bf236a4965e7
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Thu May 8 10:57:34 2014 +0200
+
+    FBX export: force to write animcurves even when we could avoid it (only one value [feyframe] in it),
+    when exporting actions.
+    
+    Note this is not ideal either, since some non-animated parts might be keyed now... No ideal solution,
+    but in case of actions, probably this is better than not exporting 'static' actions.
+
+commit 76b772db1884ff78d002c249ab45951a1b2af3f7
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Thu May 8 09:16:27 2014 +0200
+
+    FBX export: and yet another fix... :/
+
+commit 18a8e44a43d3282963940d90d94374069bb064d5
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Thu May 8 09:10:54 2014 +0200
+
+    FBX export: fix stupid refactor 'typo'.
+
+commit 6bd79aa49a767fcf363f31297cc6c206ebff6a22
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Wed May 7 20:59:28 2014 +0200
+
+    FBX export: Add support for dupliobjects (either children, or particles).
+    
+    Note only particles/dupliobjects existing in the current frame will be taken into account.
+    
+    Dev note: the 'object' part of the code becomes really ugly, it will need a serious
+    refactor (probably using some kind of wrapper around Object/Bone/PoseBone/DupliObject),
+    nobody (not even me) will be able to follow this code soon.
+
+commit 2e221573068db90373cdfd08c95575aa438d7ed7
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Wed May 7 20:58:45 2014 +0200
+
+    FBX export: various minors tweaks and fixes.
+
+commit ae74dc51cf37ee77786a4c76122feb7225bae648
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Tue May 6 21:08:51 2014 +0200
+
+    Fix T40041: Incorrect UVs with FBX export.
+    
+    Export actually works perfectly well, here (Unity probably just does not supports scale in tex mapping...).
+    But importer completely ignored texmap data when working with non-nodal materials - we at least can support
+    offset and scale data here!
+
+commit f125c03bdf5c2ed8c63b11b6fcec6ff4d33fb026
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Tue May 6 20:22:17 2014 +0200
+
+    Fix T40040: Binary FBX export only exports one action.
+    
+    That was not really true, since each strip from NLA would be exported as an animstack already.
+    
+    Supporting 'all actions' feature was in fact a bit hairy, because actions are not
+    linked to objects in Blender (you can assign any action to any object). Did it this way:
+    
+    for all exported objects:
+        for all actions in bpy.data.actions:
+            if action is 100% compatible with object:
+                temp assign this action to the object, and bake animation of this object only into an animstack
+    
+    This does not make great code, but seems to work rather well... Just be sure to not have invalid
+    paths in your actions! ;)
+
+commit 9ffc13cad61375a7facec905c1e0c0df60057d9b
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Tue May 6 15:15:22 2014 +0200
+
+    Add some versionning to obj and fbx addons.
+    
+    Rough guess, 2.0 for obj (because of quite heavy changes in it this fall/winter),
+    and 3.0 for FBX (assuming 1.0 = 6.1 exporter, and 2.0 = 7.x importer, makes 3.0 = 7.4 exporter)
+
+commit 615f1b81000e23951e404f02cebf9a4bc49cf5e3
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Tue May 6 10:59:09 2014 +0200
+
+    FBX export: do not apply Armature modifiers when we export armature objects, rather than use animation or not!
+
+commit ec3a3c6f9e8bed4fb368e5a263f9d492a447d036
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Tue May 6 10:45:19 2014 +0200
+
+    FBX export: always copy org (blenddata) matrices (when not done implicitely by e.g. multiplication).
+
+commit 83b817864498ed193096dbbc6de83ffb27204d47
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Tue May 6 09:57:37 2014 +0200
+
+    FBX export: simplify bone matrix generation, export current pose instead of rest one.
+
+commit 1982bab4da0ffa180a1a30735590414f8331bf85
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Sun May 4 17:09:50 2014 +0200
+
+    FBX export: Fix exporting without animation.
+
+commit 472760d588d047e6637b96a154262f72dac164f8
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Sun May 4 16:40:00 2014 +0200
+
+    FBX export: Support empty vgroups!
+
+commit 732c1901d4df0ab75c9cca83d5c85c8f46084b2b
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Sat May 3 18:09:40 2014 +0200
+
+    FBX export: write clusters for non-deforming bones too (need their 'rest pose' matrices...)
+
+commit fa90003bc753bbe7f98b227b4573b3b1640ce7a3
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Sat May 3 15:57:11 2014 +0200
+
+    FBX export: also export armature matrix in binding data of clusters
+    
+    Looks like nothing is expected for BindPose nodes here? Anyway, I'd guess those are
+    doublons with cluster data... :/
+
+commit 71e564e02a0a7c8c0129fc5fa632af23a3fb2a2e
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Fri May 2 23:07:15 2014 +0200
+
+    FBX export: Fix to 'nearly equal' func (would break when both values were 0).
+
+commit 8db299ec050f874a8872b19120fb28a8866983df
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Tue Apr 29 23:19:49 2014 +1000
+
+    Fix for FBX exporting Area Lights
+
+commit 7aebdfb396ef1a7899f361bf429dbeba4fdab67b
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Fri Apr 25 14:39:40 2014 +0200
+
+    Fix T39792: Tangents/bitangents missing from exported FBX model.
+    
+    Yet another stupid mistake. :/
+
+commit e6ca066ba4487c76afc54cc587f296f48528fa2c
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Wed Apr 23 17:39:56 2014 +0200
+
+    FBX export: Fix a stupid C&P typo.
+
+commit 0de4e4ac89f81125678957c9ce21e413ebfa98d3
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Thu Apr 17 10:26:47 2014 +0200
+
+    FBX: After talk with Campbell, remove "simplify skinning" option.
+    
+    This kind of target app compatibility feature is not well suited to an export addon,
+    would better be in a dedicated pre-export tool.
+
+commit dcbb4dfefb79a58444259497079a083c5e9318e2
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Mon Apr 14 17:38:33 2014 +0200
+
+    FBX export: fix handling of mesh instances.
+    
+    Was broken since apply modifiers and other geom types support was added.
+
+commit 56e3ec1402fcd39e945090471c7a704696d4d9a7
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Mon Apr 14 17:18:23 2014 +0200
+
+    FBX import: fix for newest FBX format (>= 7.4) using no more leading 'K' in templates' type names.
+
+commit a47e8703491da326e31996024576bc27ce581836
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Mon Apr 14 16:46:32 2014 +0200
+
+    FBX: user request: check for vertices used by/assigned to more than four bones.
+    
+    If new option "Simplify Skinning" is set (by default), only four most significant weights are kept.
+    Else, only a warning is issued.
+    
+    Also added more OrederedDict's!
+
+commit c6ca1b74820b23327b15aeb5790b3147dfa33698
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Fri Apr 11 19:34:10 2014 +0200
+
+    FBX: fix some bugs and glitches with animations...
+
+commit f0770f55ecd57c1cc9741e3ef1a09b68d5ff6980
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Thu Apr 10 18:03:35 2014 +0200
+
+    FBX: tweaks from user feedback & for Unity compat:
+    
+    * When exporting actions from NLA, do not export global 'scene' action (unless there is no actions in NLA!).
+    * Export actions from NLA as all starting from 0.
+    * Fix take time to be one frame longer than the longest animstack exported.
+
+commit 55da788bb837a276965cda82fa95e675ab9835bb
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Thu Apr 10 15:46:10 2014 +0200
+
+    FBX: add support for more FBX freamrate modes, since stupid Unity does not hanle 'Custom' one.
+    
+    Should fix Unity timeline weirdness (as long as you use standard framerates like 25fps, 30fps, 29.97fps, etc.).
+
+commit 39cde16787067b46c528e934deea8a42f7b29db3
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Thu Apr 10 15:08:53 2014 +0200
+
+    FBX: Add support to export other geometries (curves, metaballs, etc.) as meshes, and implement the 'apply modifiers' option.
+
+commit aa634bcea0b8d241d1846e87286a598c2b527b6c
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Wed Apr 9 18:20:11 2014 +0200
+
+    FBX: Add option (enabled by default) to export each strip from NLA in a separated baked animstack
+    (in addition to global anim from scene).
+
+commit a88815d45fbf672ac1b7e874e3b412068587878b
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Tue Apr 8 20:37:56 2014 +0200
+
+    FBX: better handling of baked rotations (use euler_compat stuff to avoid gaps in rotations).
+
+commit f664078ef083e6f00aaa3a63b885316a419a49fc
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Tue Apr 8 19:57:01 2014 +0200
+
+    FBX: Fix (bones) animation: Looks like it's better to only have one layer per animstack for now.
+    
+    Even if they do not affect the same properties, multi-layers interactions are rather complex.
+
+commit f40fa234a1b4e134304ef9d7ccc89c4775df3bfd
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Tue Apr 8 19:56:23 2014 +0200
+
+    FBX: Looks like I was still missing something in axes 'encoding'...
+
+commit 2bc5fbf3ea41e9816555d3e8b9fc7bb02297be5e
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Mon Apr 7 17:44:52 2014 +0200
+
+    FBX: add support for baked animated armature export.
+    
+    Note: tested on unity & houdini with some basic mesh/rig, needs some more serious testing with real animated characters!
+
+commit 96227395ae080cf6f063f370c5626eefdb6283f1
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Mon Apr 7 14:09:17 2014 +0200
+
+    FBX: Some minor cleanup, and pep-8.
+
+commit c6407d53d14d3329a44089308864d7c113fc8de7
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Fri Apr 4 22:01:01 2014 +0200
+
+    Fix T39589: FBX: binary exporter is with buggy normals.
+    
+    Now I'm sure of it - most app apart from latest AD ones do not yet support new normals
+    format (102, 4D vectors + weights), so revert to older 101 one (3D vectors).
+    
+    Checked on both houdini and unity.
+
+commit 88f9248faf9dec6bf30005097262c211dd330f32
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Wed Apr 2 20:09:09 2014 +0200
+
+    FBX: At last, animation works!
+    
+    Bad news is: we have to hack at binary level! Yes, some kind of elements do have
+    some specific need binary-wise. I won't say what I think of this.
+
+commit 8edb6704c83ea603c41125ba7311cd3599a397d8
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Wed Apr 2 19:57:10 2014 +0200
+
+    FBX: More small fixes.
+
+commit e6d801bfe750acc38e9791263686ea2b4a02379a
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Wed Apr 2 12:54:25 2014 +0200
+
+    FBX: Fix "only selected" not working, reported by mifth over IRC, thanks! :)
+
+commit c552e88485c5824efb74d6070aa9ae3c096bf598
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Tue Apr 1 21:43:03 2014 +0200
+
+    FBX: Fix template issue when several sub-types use the same 'super type' element.
+    
+    E.g. camera, lamp and empty (Null) data all use the same "NodeAttribute" element type,
+    while having different "sub-types" (FbxNull, FbxCamera, etc.) with different properties.
+    
+    It would have been perfectly possible to have multiple property templates, but from
+    "reading" official FBX files, it’s obvious this is not supported, so in this case we
+    have to pick one to write a real template, and for the other subtypes, we have to
+    explicitely write the whole templates' content in each and every element...
+    
+    At this point, you might wonder why introducing templates, if you have to handle
+    such hairy cases? Well, I’m wondering too...
+
+commit 3161d78110878ab5c06626b9558e0f0eed5b1d54
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Tue Apr 1 19:57:14 2014 +0200
+
+    FBX: Fix stupid bug with mats/textures (from recent usage of OrderedDict), reported by a user on blog, thanks!
+
+commit 5c3447ef3448f1a6104d184395e450c2fbfee8b2
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Tue Apr 1 16:54:24 2014 +0200
+
+    FBX: Fix empties export (they also need their own NodeAttribute...).
+
+commit 7dec02601e1b010796b0ffad0d8a285b704d9f82
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Tue Apr 1 09:55:33 2014 +0200
+
+    FBX: more minor tweaks (main here is making uids shorters, easier to read in JSONed version of files).
+
+commit 0e633f5e126e7bc0cf2a3bde509b381a315882a7
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Sat Mar 29 18:09:48 2014 +0100
+
+    FBX: Use more OrderedDict (to keep things cleaner in FBX file), and try to make output even more compatible with genuine FBX files (anim aspect), still no luck. :(
+
+commit 5c6e717fd1bb55ab818e98297ef5a4ae00b270f2
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Sat Mar 29 16:47:19 2014 +0100
+
+    FBX: more minor tweaking…
+
+commit 01af4afaf20a32322c47f054326783bcdb2f8587
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Sat Mar 29 16:23:15 2014 +0100
+
+    FBX: Mostly add Camera template data, plus a few other minor fixes.
+
+commit 8e6a2bec15236351533b392be265d9feb75e873c
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Fri Mar 28 17:40:28 2014 +0100
+
+    Another Great Breackthrough in FBX Ugliness: properties seem to have complete different signature when they are animatable or not!
+    
+    E.g.: for double properties, non-animatable will be ("double", "Number", ""), while animatable ones will be ("Number", "", "A"). Yep, looks like a good old flag is not enough...
+    
+    Btw, this still does not fix animation issue (since Lcl Translation & co are not affected by this, they seem to always be animatable...).
+
+commit 3abd8c2ba8e882b9886f1d42f2fe22e0594ff7f7
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Fri Mar 28 17:22:16 2014 +0100
+
+    Fix various issues regarding animation, still does not work... *sigh*
+
+commit b62b523020e425984987b467b69e7ca0b66d8fa2
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Thu Mar 27 17:52:53 2014 +0100
+
+    FBX: Further tweaks to UI...
+
+commit a6f8095463722bbdbff06de4db7b0fdd042bbbdc
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Tue Mar 25 17:50:30 2014 +0100
+
+    FBX: support exporting baked animation.
+    
+    Note this code is highly theorical, I could not get to test it really (other apps I have access to also fail at importing FBX anim generated from collada by FBXConverter :( ).
+    
+    For now, only basic (loc/rot/scale) of objects is implemented. Will wait for other testers' feedback before going any further.
+
+commit 22052a47dcc5e12dc60559adc9014c7f0a3f3050
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Tue Mar 25 17:49:34 2014 +0100
+
+    FBX: since we have more and more options differing between new 7.4 and legacy 6.1, add a draw() func (temp, to be removed once we get rid of 6.1).
+
+commit ac7d908b4059c316eb8b2265b58c1bcd08fd49b8
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Mon Mar 24 22:28:45 2014 +0100
+
+    Heavy rework/cleanup of property area.
+    
+    Finally understood a bit better Property format (name, type, kind_of_label?, flags, data, ...).
+    So needed to handle flags properly (currently, only aware of 'A'nimatable and 'U'ser-defined (aka custom),
+    no idea yet what means the '+' one found in some places).
+    
+    Also changed templates definitions to use OrderedDict's, gives better output.
+
+commit 6e1bb58c53cb56830b0dc34c87781b463a7eb6bc
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Sun Mar 23 12:24:09 2014 +0100
+
+    FBX: Fix bug when exporting armatures and baking transform in data.
+
+commit 28728bc51e8cffc7229f353600b7bba72f7b9a36
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Fri Mar 21 19:28:55 2014 +0100
+
+    Fix normals possibly no more normalized in previous commit (rBAb0d241f07952).
+    
+    Since global matrix might have some scale too, we have to normalize the matrix used for normals...
+    
+    Many thanks to Jens Restemeier for pointing this issue.
+
+commit b0d241f079522ba67a2b000c700c1dfb73eec6b0
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Fri Mar 21 16:33:41 2014 +0100
+
+    Add support to "bake" axis-conversion transformations into object data.
+    
+    This addresses the following issue: by default, when you export in a non-Blender orientation
+    (matching your target import app), your imported root objects have additional rotation,
+    since correction matrix is applied to object transform.
+    
+    This patch addresses this by actually baking the correction matrix at data level, when possible
+    (currently only works for meshes).
+    
+    Note this makes spaces/matrices handling rather complex, so this is considered an experimental
+    option currently, might break in some cases.
+    
+    Work based on patch T39251 by Jens Restemeier, thanks.
+
+commit 53f7bbde2cd7c0c0b3be4246fc33808fc4ae3997
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Mon Mar 17 12:40:32 2014 +0100
+
+    Fix stupid normals issue - new format expects them to be 4D vectors, *sigh*
+    
+    Many thanks to Daniel Martinez-Normand for reporting the issue and making tests! :)
+
+commit c7cd39eb6b305fbe640e4a1b855b066ddcea445d
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Sun Mar 16 17:00:19 2014 +0100
+
+    Minor tweaks to material.
+    
+    * Use 100% white transparency color when no transparency at all (seems to be needed by some importers).
+    * Always export some kind of Lambert shader, even when using e.g. Blender's toon one (better to get something, even inacurate, than nothing).
+    
+    Patch by Jens Restemeier, many thanks!
+    
+    Differential Revision: https://developer.blender.org/D405
+
+commit cce6f72de36d3cff922c8fa9a894e4a1233b9f86
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Sat Mar 15 13:21:44 2014 +0100
+
+    Fix material indices in mesh's faces.
+    
+    Patch by Jens Restemeier, many thanks! :)
+    
+    Differential Revision: https://developer.blender.org/D402
+
+commit 9f3f43ca45a71d9e8ce43d24524a0045624a1c73
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Fri Mar 14 15:59:07 2014 +0100
+
+    Fix transparency settings of materials, and add support for normal textures.
+    
+    Patch by Jens Restemeier, with minor edits.
+    
+    Differential Revision: https://developer.blender.org/D401
+
+commit d701e5db703672e6fc3a257a428f328b0346baf4
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Thu Mar 13 19:46:44 2014 +0100
+
+    Fix for custom properties - looks like they need some kind of special "type"...
+    
+    Issue pointed out by Jens Restemeier, thanks!
+
+commit 0ec518ab4be39982f116311bf3f0ec3b9be7c63b
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Thu Mar 13 12:15:46 2014 +0100
+
+    Cleanup/enhancements suggested by Campbell, thanks!
+
+commit a107117aee4b9eda2954f174c4d91240e42b6efc
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Wed Mar 12 20:56:49 2014 +0100
+
+    Style cleanup (pep8).
+
+commit 3879603620c4241bec612665dd97ab4b598559c6
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Wed Mar 12 20:22:51 2014 +0100
+
+    Initial commit of new FBX 7.4 binary exporter
+    
+    What to expect:
+    * Static export of empties, meshes, cameras and lamps, as well as materials and (image!) textures should work OK.
+      There are a few advanced topics still TODO regarding meshes and mat/tex, though.
+    * Custom properties from objects/meshes/lamps/cameras/armatures/bones/materials/textures are exported too (only simple ones, ints/floats/strings).
+    * Armature export: this needs testing by people having *native* FBX aplications, linking between bones and meshes seems to work, but I have doubts about bones orientations.
+    * Animation: still a complete TODO.
+    
+    Note that old FBX ASCII 6.1 exporter is still available (top dropdown in exporter's UI).
+    
+    Many thanks to Campbell, which did the ground work of decyphering FBX binary format and wrote basic code to read/write it.
+
+commit 779e9de49f93401eb263fd5c81e66aa0a6fb35ca
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Thu Dec 19 04:17:35 2013 +1100
+
+    Fix for error in r4790 index data isn't always required
+
+commit ecb43feb368597b25e0ca8b48888448e04c00cae
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Fri Nov 29 12:57:56 2013 +1100
+
+    Fix T37553: Some FBX files have some '-1' (invalid) indices in mapped layers
+    
+    I can't find any docs on this but from checking the file these can be
+    safely ignored.
+
+commit 3d71a0995decd1c74b088e4007a1c2fe310b0301
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Sun Nov 10 13:28:24 2013 +0000
+
+    Import FBX: correct behavior for empty FBX files (no 'Objects' nor 'Connections'  top-level elements).
+
+commit ea798111bfdd1cb4db4e42bce260c5988960a70b
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Tue Oct 15 15:45:00 2013 +0000
+
+    Fix a bug reported on IRC by mifth (a print was assuming org obj was a mesh...). Also cleaned up another debug print, we do not need those!
+
+commit ab00b6d5a2e394ba08a53d073c7e862980df09d6
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Mon Oct 14 15:00:20 2013 +0000
+
+    More FBX fixes regarding UV/textures, found while investigating a potential issue with mifth on IRC: handling of default empty texture (when there are none real texture to export) was rather fuzzy/inconsistent.
+    
+    Note: not to be backported, not 100% sure this is now correct, and not a regression anyway.
+
+commit 44a0755b3cc537ef490ed2bfb5cc87f146006700
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Thu Oct 10 13:35:35 2013 +0000
+
+    Fix [#37029] FBX Export does not work if Mesh has no Material.
+    
+    This situation was simply not handled in existing code. Also removed last use of tessellation (my bad, should have checked this before), and enhanced/cleaned up a bit mat/tex handling.
+
+commit bd50a4e36867884b789aa209a0d85000105bb5be
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Wed Oct 9 09:44:24 2013 +0000
+
+    fix [#36995] FBX Importer does not import fbx model
+
+commit d57fa9e144659689ae0ca6b1f104f191be4b0bf6
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Mon Oct 7 14:18:22 2013 +0000
+
+    Fix [#36985] FBX Exporter does not export UVs.
+    
+    Grr, another stupid mistake, we always need me.uv_textures, even if we do not actually export textures!
+
+commit a53d426c5ddcf37010c08ed328577dc93ab2e8d6
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Thu Oct 3 09:57:39 2013 +0000
+
+    Fix own stupid error in previous commit (deleting undeclared vars...).
+
+commit aba9240882f21ceed9ce767faf346d44922c4f6c
+Author: Brecht Van Lommel <brechtvanlommel@pandora.be>
+Date:   Wed Oct 2 17:06:05 2013 +0000
+
+    FBX import: fix to set mapping node to appropriate vector type after change in trunk.
+
+commit 5691e19874fef308860a8614b8042484c9437335
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Tue Oct 1 08:41:09 2013 +0000
+
+    Fix [#36854] FBX export error when using two uv maps
+    
+    Stupid mistake, vcol was also affected…
+
+commit 0d042166ab031a721c9d052f0a8a1282f503ea8a
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Thu Sep 26 08:24:24 2013 +0000
+
+    support for texture UV wrap on cycles materials.
+
+commit 5974f00e9998d4ac274c897dcd11a1d10510e0a7
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Thu Sep 26 04:41:54 2013 +0000
+
+    update texture node values to match changes to blender.
+
+commit 7dfa3283b67505b32ede971fa54731364c876a9c
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Tue Sep 24 07:12:29 2013 +0000
+
+    fbx import cycles roughness wasnt set correctly
+
+commit 13fbfe74f9b99e78395c409595cd3db3b752ebe0
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Mon Sep 23 14:35:09 2013 +0000
+
+    fix for missing check with cycles materials
+
+commit 2e8c3860349d7522ebee0f7cf042fb36738f7f32
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Fri Sep 20 09:04:31 2013 +0000
+
+    Enhanced FBX export.
+    * Export polygons instead of tessellated tris/quads.
+    * Export split vertex normals.
+    * Better performances (about 20% gain at least with big files), and use much less bytes when exporting UVs/VCol!
+
+commit 407fc6e85452d778f87301eca0f9187f419b492a
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Wed Sep 18 10:35:36 2013 +0000
+
+    fbx import cycles materials - set image mapping from diffuse for other channels that have no mapping set.
+
+commit 566a38db6d336a0cf2b6d2e1ca92ddb77c133864
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Mon Sep 16 13:56:27 2013 +0000
+
+    Fix [#36268] FBX exporter precision min is too big
+    
+    Using a bit more flexible way to handle those values (range now from 10^-18 (20) to 10^2 (0) frames). Not sure we shouldn't rather get rid of such "magic" value and let user set frame threshold directly, though!
+
+commit 151a89950001ec5643e75901eddf85fededf1213
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Fri Sep 13 00:48:12 2013 +0000
+
+    fix [#36714] FBX Importer fails to import binary FBX out of 3DS MAX
+
+commit ac7e79ea35be9d2b9fd2d87ad09c4dc1aa26e248
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Thu Sep 12 23:48:10 2013 +0000
+
+    add check for reading ascii fbx files, was common annoyance that users are unaware that they try to import ascii files.
+
+commit 842a8e407b23eb1d72f2ff88b439aa08d504ff0c
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Wed Sep 4 22:59:25 2013 +0000
+
+    patch [#36495] Improved FBX exporter
+    from Norbert Nopper (mcnopper), with some of my own edits.
+    
+    - Improved light export
+    - Improved camera export
+    - Improved material export
+    - Improved mesh export. faces can now be either flat or smooth.
+
+commit 53f601943472b520bf484d755b82d01661e0d9d6
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Wed Sep 4 10:23:51 2013 +0000
+
+    fbx/cycles support for mapping node.
+
+commit 7e932e56e1edacea91ff1287795788ba649ccf0f
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Tue Sep 3 22:06:58 2013 +0000
+
+    rename normal_map -> normalmap, also remove fakeuser on materials.
+
+commit 5cd33cec7da2967d6924f38ed0794b1b28854135
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Tue Sep 3 22:05:50 2013 +0000
+
+    store cycles image nodes (needed for mapping support)
+
+commit 9a9805676b2d39afb5baae6d3c1e9321719b5e51
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Mon Sep 2 07:46:31 2013 +0000
+
+    tweaks  to xor use.
+
+commit 95b2fb5658939120b1f93f5ec1d9a53b8d36ffd3
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Mon Sep 2 06:24:26 2013 +0000
+
+    fix for edge importing, it wasn't working at all.
+
+commit cca2448f17965714782c9bec99a6aae075484f87
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Wed Aug 28 08:09:15 2013 +0000
+
+    fix for various corner cases from testing more sample files.
+
+commit c15da3a41249ed26de82dccf49bd47ae597673e3
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Wed Aug 28 06:20:32 2013 +0000
+
+    found another data type - byte arrays. add support.
+
+commit b4781416492eca8e12cd15a09af14e78c01c76b3
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Wed Aug 28 05:01:12 2013 +0000
+
+    add support for reading vertex colors
+
+commit 7ea523d8d30d96c92c5dfc097746a5ad77a63bd3
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Mon Aug 26 18:57:02 2013 +0000
+
+    use the alpha of an image for the alpha channel when using FBX/Cycles
+
+commit 1b7a7f51c44b7151843a3aa2cd58ae0b261fa10d
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Sun Aug 25 06:25:16 2013 +0000
+
+    fix for fbx import with UV layers that have empty names
+
+commit d405965c654713b0c59422d74767af4d2ede702f
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Sat Aug 24 07:45:09 2013 +0000
+
+    worarounds to get some models for 3dsmax loading
+
+commit 024f12e59f6e4f04a1930ef4812ef3c70374e51c
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Sat Aug 24 05:10:27 2013 +0000
+
+    fix for UDK FBX files which have smoothing layers with no data.
+
+commit 3d9be8a8e47c992e6c2ef0ef3dbc79e20b4621e1
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Wed Aug 21 04:32:25 2013 +0000
+
+    add support importing edge and face smoothing
+
+commit 90faef888782fe9730e5cc33bec77e12eade36ad
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Wed Aug 21 04:31:23 2013 +0000
+
+    fbx export edge smoothing was negated
+
+commit c0ac539aeb8718f27dd73bf7e12311a0815429bc
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Tue Aug 20 12:57:54 2013 +0000
+
+    remove unintended return
+
+commit 0b5dd429a255bf225d9501413fa2d9ba87dff13a
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Tue Aug 20 12:45:48 2013 +0000
+
+    fbx improve mesh support.
+    - support multiple materials per mesh.
+    - support multiple UV layers.
+    - fix but where an extra dummy face would be imported.
+
+commit 23d5d2872369c944b7bed54c7bebddbc11605475
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Tue Aug 20 04:49:59 2013 +0000
+
+    comment print
+
+commit 78094748962bf28d1d18b44ad54a5618a1490eea
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Tue Aug 20 04:39:09 2013 +0000
+
+    - added support for property templates (FBX uses fallback templates so properties can have default values)
+    - fix but in importing blender-internal material bumpmap.
+
+commit 53810a34150cde9d7dfaa31167eda2502cc7ce1c
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Tue Aug 20 02:41:15 2013 +0000
+
+    enabled presets for FBX import.
+
+commit 7040b8cdc579c43b078e182091d66a2f3f6331c0
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Mon Aug 19 14:41:05 2013 +0000
+
+    fix for loading some FBX files
+
+commit ae7ca7fa48671a2415d4c438b91eabcd330f2725
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Mon Aug 19 13:21:36 2013 +0000
+
+    fix for loading models saved in 'revit'
+
+commit f10d8714f9d2743b2708397d2e1337f4d5a4be9d
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Mon Aug 19 11:41:55 2013 +0000
+
+    update parser to support binary arrays
+
+commit 78a1a609731d0501e0e17aa319e4e1e4c98c76e5
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Wed Aug 14 07:29:11 2013 +0000
+
+    add a utility function to return the fbx version number only (dont parse the entire file)
+
+commit 94dd666b5830acbee56f40734f43802f669922d3
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Tue Aug 13 07:52:54 2013 +0000
+
+    missed adding images into the image cache
+
+commit bdceaf2602ce49ce2bd51ba339874642accfb1a4
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Mon Aug 12 08:51:24 2013 +0000
+
+    remove path component from image names
+
+commit 9177e260ead580739eaffe2bfd45a87dcc63ae6d
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Mon Aug 12 06:11:07 2013 +0000
+
+    smooth all objects (so we see their normals)
+
+commit 1294c3baf74733e9ad3e8688403a43ce65bc023a
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Mon Aug 12 05:30:58 2013 +0000
+
+    use diffuse alpha channel if no other alpha channel set, hidden option to treat all alpa as decals (no shadow and z offset)
+
+commit a13a093fc4ac21a9d2b73ae8b292e87c3d54e1e7
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Mon Aug 12 03:16:33 2013 +0000
+
+    style cleanup - long lines
+
+commit 77f26b16ca58c7a58db492c5a65ba21acdf6e3db
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Mon Aug 12 02:59:35 2013 +0000
+
+    add support for reading vertex normals
+
+commit 5a1de036bce98045cfd64de1406e5fae78239ef3
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Mon Aug 12 01:52:58 2013 +0000
+
+    add object color support
+
+commit fd0e04ed140553446abe64a947eb1aded725f4c2
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Mon Aug 12 00:19:44 2013 +0000
+
+    add support for other object transformations
+    - rotation orders other then XYZ
+    - RotationOffset/RotationPivot/ScalingOffset/ScalingPivot/RotationActive/PreRotation/PostRotation
+
+commit c46065f5f553bded6b950d98dc37a42725d48dcf
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Fri Aug 9 22:06:15 2013 +0000
+
+    add support for reading lamp shadow-color, distance, cast-shadow settings.
+
+commit cc7a533a087efcf492ea50c0d9f4d7b337e492e0
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Fri Aug 9 09:14:54 2013 +0000
+
+    support for object parenting
+
+commit 79bcb17b7b5bb194c211977a27b6416a70e71f64
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Fri Aug 9 08:36:43 2013 +0000
+
+    add support for empty objects
+
+commit 6a066b5337d551874c9fa8d44631c0cbd7ef9aa6
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Fri Aug 9 08:13:49 2013 +0000
+
+    load objects before linking materials (minor change)
+
+commit 081f3e53d6fa270c126df198d5d8ac25f099473b
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Fri Aug 9 08:08:30 2013 +0000
+
+    support for loading meshes without vertices/faces
+
+commit 416e66d067a33e347488ded0e645d504da440f89
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Fri Aug 9 06:11:12 2013 +0000
+
+    support for camera FOV clip-range, x/y shift
+    support for lamp color, energy, spot angle
+
+commit 0529970a6a6af062bac6ca56e551116e2819052c
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Fri Aug 9 05:18:18 2013 +0000
+
+    add iniital camera & lamp loading support
+
+commit 87ff389bd71a6d8d4a8e52c3d232cd155d2511b4
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Fri Aug 9 05:18:00 2013 +0000
+
+    remove XNA hacks
+
+commit 2b1468ecc42e454f849d0e15a0add1cfa4c17efd
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Fri Aug 9 00:19:04 2013 +0000
+
+    fix for object translation being applied incorrectly
+
+commit 4bd0f693f3276ea7a395925da394d005cda5ee5f
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Thu Aug 8 09:59:12 2013 +0000
+
+    initial FBX importer, work in progress but can load...
+    
+    - binary fbx files only
+    - version 7.1 or newer
+    - meshes, uvs, materials, textures
+    - support for blender-internal and cycles materials (depends on engine selected)
+    
+    note - yes, this cant load fbx files exported by blender, for that to work we would need to update the exporter.
+
+commit 9072ee3214a2dee044c985889326d9be638d40c1
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Thu Aug 8 06:59:06 2013 +0000
+
+    module for FBX importer, cycles compatibility
+
+commit 26ef284ae4468b6ed3a41b07394a8c2e2512d0f5
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Mon Jul 15 09:42:13 2013 +0000
+
+    remove unneeded check
+
+commit f02b630d528dbfeab7f8f787086340522cc57a20
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Mon Jan 14 10:22:23 2013 +0000
+
+    minor style cleanup to povray export and fix for UI, setting booleans now expects 0/1 only.
+
+commit 2872d0440fd1fdb4048cfd0a135f4763562cf96e
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Wed Dec 19 16:07:27 2012 +0000
+
+    fix [#33615] bl_info (2,6,5,0) vs. (2,65,0) ?
+    
+    make addons blender versions consistent
+
+commit e86e443caf949b6060196fe066756af866617620
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Wed Nov 14 12:17:05 2012 +0000
+
+    use alternate syntax to clear lists
+
+commit 6facadf247754c4de310b0f9475b093562506c73
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Mon Sep 10 23:13:44 2012 +0000
+
+    fix [#31622] .3ds importer doesn't do anything with the constrain_size
+
+commit bcabddfd31e6cc48ddf1b06c5d81174340608050
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Wed Jul 4 15:05:50 2012 +0000
+
+    More spell checking.
+
+commit 2dc06f6d50d14a97ff0c37f88b6979d18a0fd279
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Tue Jul 3 09:01:43 2012 +0000
+
+    Style edit (mostly), use """ for docstrings (not ''').
+
+commit a93b6af6cda43d7886ba60e5370b26bb747635f8
+Author: Brendon Murphy <meta.androcto1@gmail.com>
+Date:   Sat Jun 23 15:05:39 2012 +0000
+
+    update wiki version ro 2.6
+    finished
+
+commit f9e21740384cdc7c0576004167760f026bc2661f
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Thu May 24 07:26:08 2012 +0000
+
+    patch from Doug Perkowski
+    
+    from Doug:
+    
+    Most applications aren't very strict with the bind pose because they support different bind poses for different meshes.  Ogre requires a single bind pose for all meshes, which makes things a lot more difficult.
+    
+    The changes are where the BindPose is defined (which is pretty much ignored by most applications, but you seemed to have added it for XNA), and the skin deformer.  In both cases, global transforms for bones were not correctly being exported.  I set global transforms for the bones equal to (my_bone.fbxArm.matrixWorld * my_bone.restMatrix) * mtx4_z90.  That  appears to do the trick for me, though I can't say I fully understand how the terms are derived.
+    
+    I've tested kngcalvn_fbx_test_new.fbx and our sample file in Maya & our FBX importer, and both work with the changes.
+
+commit 45d006e6628decd5b61759f9bddf0140ae1aba20
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Mon May 7 13:13:52 2012 +0000
+
+    fix [#31291] 2.63.0 export to Autodesk FBX (.fbx) is empty if no camera
+
+commit f1dbe6bf1a795a8355958f8b3e95df0d4d4a8cf1
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Mon Apr 9 04:27:38 2012 +0000
+
+    fix for bad error exporting vertex locations twice.
+
+commit e63e95789e23f672b2d55319232e391e254219fb
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Fri Mar 23 01:18:52 2012 +0000
+
+    update addons enabled by default to use 'faces -> tessfaces' also grease pencil scatter and quake map export.
+
+commit ff5c86fcc343ef8bfa208d4594712ce53fac6b9e
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Tue Mar 13 16:44:59 2012 +0000
+
+    option to export only deforming bones (defaults to True for Unity3D)
+
+commit ba4b4635e7646999a02ea2e837a9371d379508f5
+Author: Brecht Van Lommel <brechtvanlommel@pandora.be>
+Date:   Mon Mar 12 08:59:19 2012 +0000
+
+    Fix #30523: typo in FBX export of fog settings.
+
+commit 65b02373455aed5f04ddaba5c5999ffb8915d428
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Thu Mar 8 19:11:01 2012 +0000
+
+    update fbx export for bmesh api changes.
+
+commit 9291f167be73a5cd6dc2603d72725d9a02be0da2
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Sat Jan 14 13:00:28 2012 +0000
+
+    remove api field, was never used.
+
+commit b59b7bba820d1fed0fc250283821058831985ce2
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Wed Jan 4 04:26:33 2012 +0000
+
+    use sets for checking against multiple values.
+
+commit e80cdf3f08fa30e9742fd57c3e2caf1dc3731320
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Sat Dec 24 07:56:06 2011 +0000
+
+    fix for change to row major matrices
+
+commit b847fba4910dadf0337ec7f35cf78aa8c1f5aa0b
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Fri Nov 25 03:42:10 2011 +0000
+
+    minor pep8 edits
+
+commit 9ac0a714bee5df2153e0a73bb55962139ba18eb2
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Sat Nov 19 16:19:08 2011 +0000
+
+    indentation edits and copy pyrimid from contrib (where I had made some edits), removed so this wont happen again.
+
+commit 578a37005a58e20cb28d8485cd20201448cca3bd
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Mon Nov 14 09:37:37 2011 +0000
+
+    patch [#25979] fixes for addons/io_scene_fbx, io_scene_x3d
+    from Filiciss Muhgue (filiciss)
+
+commit 6cb9c0bf91a1534a601fac8e15803ad8b49669e0
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Fri Nov 11 03:16:01 2011 +0000
+
+    minor formatting edits
+
+commit 81771c7a18d982b0d17df3cf31eb60378e60fe8c
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Sun Nov 6 02:47:04 2011 +0000
+
+    write out camera sensor width and height into FBX
+
+commit 0b62e62c2b3e003d9c6359e83f513746a7ef2121
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Sun Oct 23 19:57:37 2011 +0000
+
+    Minor set of UI messages fixes and tweaks! No functional changes.
+
+commit dfb74f84549fb0a8debbc85be457301237e8c3e3
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Mon Oct 17 06:59:42 2011 +0000
+
+    fix spelling errors for comments
+
+commit 0c7ec221c9fbd1627b0b7dd1d42814e8b6cee531
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Thu Oct 13 02:16:56 2011 +0000
+
+    fix [#28889] FBX only exports action with action groups
+
+commit 1a21899facaac90ee7b296ce84ed859198b5ad3b
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Tue Oct 11 04:44:52 2011 +0000
+
+    use library argument for bpy_extras.io_utils.path_reference(...)
+
+commit 1dc78bc5619177d875660ba071026b72a4ab9726
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Thu Oct 6 15:48:11 2011 +0000
+
+    fix for shape key check failing on metaballs
+
+commit 360d41a2df8451c6249ebf354c2a2cf2e644d459
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Wed Oct 5 04:52:58 2011 +0000
+
+    minor change to string formatting.
+
+commit 75e5f56ef262e35a4992a7493ac19a47af3a5635
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Wed Oct 5 04:51:43 2011 +0000
+
+    shape key support for FBX
+
+commit 9b80eb7f72b85ef001c4e9c551f944827089647b
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Tue Sep 27 04:09:03 2011 +0000
+
+    edit some fbx properties
+
+commit 19b6b488d4cd3da525b84b306d74281bf3087b21
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Mon Sep 26 15:18:31 2011 +0000
+
+    corrections for addons to update for trunk.
+
+commit 3c0c519981fe64c320f5f7d721acf0c44bcfa383
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Fri Sep 23 09:28:59 2011 +0000
+
+    Fixed other “report type” issue as well
+
+commit 1d1482044b46c98f86c33945a1bd1cf4edc7bb36
+Author: Bastien Montagne <montagne29@wanadoo.fr>
+Date:   Mon Sep 19 15:08:06 2011 +0000
+
+    /trunk: Removed final points in UI strings and messages.
+    Plus a few styling enhancements.
+    
+    [[Split portion of a mixed commit.]]
+
+commit 25bb26c2f327d0cab0d08678127609a6c0dd8fb9
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Sun Sep 11 15:36:48 2011 +0000
+
+    pep8 edits & import cleanup
+
+commit b25a7c909950ef9d8d0528150fc6f761b73ab6f0
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Thu Sep 8 05:26:39 2011 +0000
+
+    pedantic pep8 edits
+
+commit 0ced4fb4f5a4d4b7926b0ae6ae4e303a873f65f6
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Wed Sep 7 00:37:05 2011 +0000
+
+    enable default take by default - otherwise object animation isnt exported.
+
+commit a926a2b9838fc604d4dac07f9f3a79154fdc7763
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Wed Aug 24 13:14:30 2011 +0000
+
+    minor syntax change to addon headers
+
+commit 2135f8806c5154bb55374faf83cdecb48d4de090
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Mon Aug 8 05:23:00 2011 +0000
+
+    use sets rather then tuples for if checks, python optimizes this case.
+
+commit 64e3e69bc0135eec1662170594a32dc878c4f327
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Thu Aug 4 05:49:39 2011 +0000
+
+    - fix for error in new option disabling default take
+    - added default options for unity3d, can add other defaults too
+
+commit d22e5002f0a798174b8744edfa6acef25cce393e
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Wed Aug 3 11:03:04 2011 +0000
+
+    fix for spelling error in var name
+
+commit 845c077891e723ed9cb662a419b3f2847f2a1644
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Wed Aug 3 05:33:14 2011 +0000
+
+    move axis conversion check into blenders parent helper function.
+
+commit 08ab06316b016b948ed0fbdb49f1b95027c858be
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Wed Aug 3 04:52:28 2011 +0000
+
+    file.write -> fw
+    gives a few % speedup
+
+commit cc104d3a1d99088bf0dfecee89a399ab6035df7f
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Tue Aug 2 12:36:49 2011 +0000
+
+    patch [#28118] Add XNA requirements to the official FBX exporter
+    from John Brown (jcbdigger)
+    patch file:
+        fbx_xna_unified-2011-08-02a_jcbdigger.patch
+    
+    
+    Option not to export Default Take
+
+commit 466c62ac401272b897744d2203b5c9fa4502c391
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Tue Aug 2 03:47:53 2011 +0000
+
+    patch [#28118] Add XNA requirements to the official FBX exporter
+    fbx_xna_unified-2011-08-01b_jcbdigger.patch
+    
+    Only part of this patch has been applied (just the changes to the operator).
+
+commit af88ccbfee8149971096a8af7e9af191548de819
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Mon Aug 1 12:52:09 2011 +0000
+
+    rename operator properties and make __init__ file pep8-80 compliant.
+
+commit 4281300d70f0e064af60d0ab3f3a24051ae7adc9
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Mon Aug 1 00:47:09 2011 +0000
+
+    patch [#28118] Add XNA requirements to the official FBX exporter
+    from John Brown (jcbdigger)
+    
+    The patch has been modified, some of the changes I rather see applied as separate patches.
+    
+    This commit adds/changes:
+    - Option to export XNA compatible armature rotations.
+    - Option not to export mesh edges.
+    - Always export armatures as 'Limb' type.
+    - dont write default cameras or camera switch when cameras are disabled.
+    - fix for (harmless) error where armature connections were written out twice.
+
+commit 3f7e914d5effb63290ab4b1676abbc0556ee04a7
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Fri Jul 29 06:26:13 2011 +0000
+
+    pep8 edits and some style change
+
+commit f7ed59065a9069de777e4957f48650d72bd2a400
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Mon Jul 25 02:02:10 2011 +0000
+
+    reverse matrix, vector multiplication order,
+    previous order deprecated.
+
+commit 4746348799f063bf35b46e71831a35ad6b0d88a6
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Thu Jul 21 05:01:24 2011 +0000
+
+    reduce the number of write commands, no functional changes.
+
+commit 78dfd37f5c6a6c7de28e071c299675a0a58d1990
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Wed Jul 20 09:15:43 2011 +0000
+
+    no functional changes, write out tabs rather then spaces for FBX indentation.
+
+commit 70254c0c5e656ed5d0282d946b8e85b5ed85efb9
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Wed Jul 20 08:10:59 2011 +0000
+
+    fix [#28028] 3ds export fails due to relative paths in windows
+
+commit 246277c4670bedc3b064238708bbaac4396290ce
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Wed Jul 20 05:28:15 2011 +0000
+
+    fix [#28029] Exporting linked groups to FBX to load on Unity3D
+
+commit 45135ce6e451c3ef90ff66e035fb80eaa55c9291
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Wed Jul 20 01:07:41 2011 +0000
+
+    fix [#27964] 2.58 FBX Export can result in missing data and lost animation(s)
+
+commit 34680d1f7b31f59cacb10f3782fd100bbf503b3d
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Mon Jul 18 05:09:07 2011 +0000
+
+    fix for invalid axis being allowed on import/export
+
+commit 488e1da935d55330be55eb30b4605b993dd65dbd
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Sun Jul 10 22:57:27 2011 +0000
+
+    cleanup
+    - remove/comment unused variables
+    - remove unused imports
+    - fixed some bugs using incorrect variables
+
+commit dee6d90df47b502e26ed09c1487bfa8f4bb4634e
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Tue Jun 7 06:24:53 2011 +0000
+
+    fix [#27595] Export FBX with parented empty
+
+commit 06e9a76aa9529eb1bbab94d71fcc66a206266e2e
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Fri May 27 15:06:35 2011 +0000
+
+    fix for FBX rotation which I reset in recent commits.
+
+commit f7df475c0ba9c3c6b63461e0fbf68e9fa0cbf4ef
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Fri May 27 14:30:45 2011 +0000
+
+    own failt, bad assumption r1967, when switching the order of matrix multiplication.
+
+commit d8f7f124df1734d1eb1fb7d8d4bf140908e3c1df
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Thu May 26 08:57:11 2011 +0000
+
+    rename axis conversion operators settings.
+
+commit e41ec5e2c24198039c05de81d3443857d7727606
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Thu May 26 08:51:05 2011 +0000
+
+    - 3ds now selects all objects on import
+    - fbx default use_selected to False
+
+commit 591821c92254b03a64113c077e258d50ff20cca5
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Thu May 26 08:45:31 2011 +0000
+
+    added axis settings to 3ds import/export
+
+commit 86bd3cc31b636070da779f21b1fdc128faf1fc5d
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Tue May 24 22:20:54 2011 +0000
+
+    axis conversion for X3D and OBJ operators
+
+commit fca80ff61e8bbce39bc2584a6ad7e7659577d1b1
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Mon May 16 07:52:45 2011 +0000
+
+    update for changes in blender module layout, also add global axis conversion to FBX.
+
+commit 283270cab4109561c6be6c3ac043fd3a9ecb9fd0
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Sat May 7 02:59:24 2011 +0000
+
+    remove blend_root, root object.
+    also write out deformed meshes as parentless since the bones `own` them.
+
+commit 84dc598e1e3583533dac2deb0670caa10a1578d1
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Fri May 6 03:43:15 2011 +0000
+
+    FBX had the scene scaling at 100.0, was annoying importing into other apps.
+
+commit 1a3307aadf2a13ee072d0f0f8bb9401fbca2d769
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Thu Apr 21 07:06:48 2011 +0000
+
+    description for demo mode.
+
+commit 1d1602db101896251d38d8cfa3c699bf916248a1
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Tue Apr 19 08:59:41 2011 +0000
+
+    fix [#27042] FBX export - missing selected objects item
+    also option to export lamps was missing.
+
+commit 6017855ad1a4171ffa97158dea5973584db8990c
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Fri Apr 15 04:51:32 2011 +0000
+
+    fix for FBX export not referencing smoothing information, spotted by Robin Deitch (robindeitch).
+    Added option for smoothing export - Face/Edge/Off.
+
+commit eb4a266295c42cdd2f55b094eeed2478391edb4d
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Thu Apr 14 08:49:26 2011 +0000
+
+    common option to export paths for FBX and OBJ
+
+commit 8cf3fc4a5f5ef15d72dd4b396a7c78044fa91968
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Fri Apr 1 02:46:35 2011 +0000
+
+    pep8 cleanup & remove unused imports
+
+commit 1d838454afb884cf7b288afc7b6915c779230ecb
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Tue Mar 29 03:54:27 2011 +0000
+
+    use identity comparison with None (as suggested by python)
+
+commit 89f54a30a39f57be545dff1a710b7b7f5372f999
+Author: Jonathan Smith <j.jaydez@gmail.com>
+Date:   Sat Mar 19 13:20:33 2011 +0000
+
+    Updated Blender Version to 2.57 and api version
+
+commit 6cbbe90e7ec4a2cd18214d37916a87e167e67ba7
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Wed Mar 16 12:04:48 2011 +0000
+
+    fix for error in recent updates.
+
+commit bbeb2132fc8a10a7b697ce30c72f4bbab5da25e0
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Mon Mar 14 23:52:13 2011 +0000
+
+    pep8 cleanup
+
+commit 374c7c2a7ba029236c9cceb63218453579ba70d8
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Mon Mar 14 01:38:56 2011 +0000
+
+    update for changes in rna api
+
+commit 5d013287b93a364389b1b523a36a539077be9aa2
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Tue Mar 8 21:47:08 2011 +0000
+
+    missed committing the change to FBX export operator with recent changes.
+
+commit 0619078b325153be04606f559e21310cfef4c474
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Mon Mar 7 08:00:17 2011 +0000
+
+    add back fbx support for batch mode.
+
+commit ebeeb59020f86fa0504f364d7703aa9dd100978b
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Sun Feb 27 15:27:55 2011 +0000
+
+    replace imports from *, considered bad practice by python devs.
+
+commit d890d19a9ee4771e057a475a98b7a11013c58133
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Wed Feb 16 02:26:15 2011 +0000
+
+    pep8 style warning corrections.
+
+commit 61d5b389e2424ff22576cc07b99260f952f6f97b
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Fri Feb 11 01:29:13 2011 +0000
+
+    add in module register calls (first pass, batch replace, will test each addon next).
+
+commit 4d24ac5ca09e45b3afb6873ddfdf3530ff98f097
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Thu Feb 10 00:10:20 2011 +0000
+
+    patch [#25979] fixes for addons/io_scene_fbx, io_scene_x3d
+    from Filiciss Muhgue (filiciss)
+    fixes [#25997] Export to X3D reports error TypeError: 'NoneType' object is not scriptable.
+
+commit fe45d789d860ee6d59f5b973d7832237d6d0d269
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Mon Feb 7 08:16:01 2011 +0000
+
+    rename id.update() to update_tag()
+
+commit 696b0366f5c46dcfcb50f53b4ca4f59c593b88fb
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Sat Feb 5 07:08:34 2011 +0000
+
+    update for changes in mathutuils.
+
+commit e069b00331a1cf3316053c61bca6b49e37155eef
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Sun Jan 23 13:06:39 2011 +0000
+
+    add accessor function to private variable, direct access was giving an error.
+
+commit 6dbb21f4c0ca5927b870ae066d5148d0aa2efd81
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Sun Jan 23 07:34:53 2011 +0000
+
+    patch from Steven Batchelor to add support for loc/rot/scale constraint limits.
+
+commit 0a2db9698257b70d8eff69051b5b1b577dde73a5
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Sat Jan 22 10:03:37 2011 +0000
+
+    write \n even on windows so files can be compared between windows and linux (for testing).
+    most editors (besides notepad) will open these files without trouble.
+
+commit b688facc4fad5159bee7bb7717cd5bca5b34c983
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Thu Jan 20 23:21:07 2011 +0000
+
+    sort materials so we get predictable output from blender, also add option not to include dates in files.
+
+commit 04768630761ef536306b831395e354c9d13fa884
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Thu Jan 20 21:59:12 2011 +0000
+
+    bugfix for lamp export, rename operator setting to be in keeping with other exporters.
+
+commit c8aad9e989447b1d1aed41ee6af2232d82ae09e9
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Thu Jan 20 21:45:55 2011 +0000
+
+    revert part of r1424, included a patch on FBX export by accident.
+
+commit 84c40946e4197841c6345af32bab15524742fb6b
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Tue Jan 18 01:58:49 2011 +0000
+
+    correct bad spelling; 'indicies' --> 'indices'
+
+commit f47802fbfebf98be32534ae8385f0e815694eb52
+Author: Campbell Barton <ideasman42@gmail.com>
+Date:   Fri Jan 14 17:33:39 2011 +0000
+
+    scripts from bf-blender which are now maintained in bf-extensions.
