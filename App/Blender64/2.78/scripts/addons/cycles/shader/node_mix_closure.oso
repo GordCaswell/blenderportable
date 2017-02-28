@@ -1,6 +1,6 @@
 OpenShadingLanguage 1.00
 # Compiled by oslc 1.7.5
-# options: -q -O2 -IK:/BlenderGit/blender/intern/cycles/kernel/shaders -o K:/BlenderGit/build_windows_Release_x64_vc12_Release/intern/cycles/kernel/shaders/node_mix_closure.oso
+# options: -q -O2 -IC:/b/blender/intern/cycles/kernel/shaders -o C:/b/build_windows_Release_x64_vc12_Release/intern/cycles/kernel/shaders/node_mix_closure.oso
 shader node_mix_closure
 param	float	Fac	0.5		%read{1,1} %write{2147483647,-1}
 param	closure color	Closure1			%read{4,4} %write{2147483647,-1}
@@ -15,16 +15,16 @@ temp	float	$tmp2	%read{4,4} %write{3,3}
 temp	closure color	$tmp3	%read{6,6} %write{4,4}
 temp	closure color	$tmp4	%read{6,6} %write{5,5}
 code ___main___
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_mix_closure.osl:25
+# C:/b/blender/intern/cycles/kernel/shaders/node_mix_closure.osl:25
 # 	float t = clamp(Fac, 0.0, 1.0);
-	functioncall	$const3 3 	%filename{"K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_mix_closure.osl"} %line{25} %argrw{"r"}
-# K:/BlenderGit\\blender\\intern\\cycles\\kernel\\shaders\\stdosl.h:144
+	functioncall	$const3 3 	%filename{"C:/b/blender/intern/cycles/kernel/shaders/node_mix_closure.osl"} %line{25} %argrw{"r"}
+# C:/b\\blender\\intern\\cycles\\kernel\\shaders\\stdosl.h:144
 # PERCOMP1 (sign)
-	min		$tmp1 Fac $const2 	%filename{"K:/BlenderGit\\blender\\intern\\cycles\\kernel\\shaders\\stdosl.h"} %line{144} %argrw{"wrr"}
+	min		$tmp1 Fac $const2 	%filename{"C:/b\\blender\\intern\\cycles\\kernel\\shaders\\stdosl.h"} %line{144} %argrw{"wrr"}
 	max		t $tmp1 $const1 	%argrw{"wrr"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_mix_closure.osl:26
+# C:/b/blender/intern/cycles/kernel/shaders/node_mix_closure.osl:26
 # 	Closure = (1.0 - t) * Closure1 + t * Closure2;
-	sub		$tmp2 $const2 t 	%filename{"K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_mix_closure.osl"} %line{26} %argrw{"wrr"}
+	sub		$tmp2 $const2 t 	%filename{"C:/b/blender/intern/cycles/kernel/shaders/node_mix_closure.osl"} %line{26} %argrw{"wrr"}
 	mul		$tmp3 Closure1 $tmp2 	%argrw{"wrr"}
 	mul		$tmp4 Closure2 t 	%argrw{"wrr"}
 	add		Closure $tmp3 $tmp4 	%argrw{"wrr"}

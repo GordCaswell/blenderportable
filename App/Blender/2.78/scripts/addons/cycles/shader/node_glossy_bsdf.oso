@@ -1,6 +1,6 @@
 OpenShadingLanguage 1.00
 # Compiled by oslc 1.7.5
-# options: -q -O2 -IK:/BlenderGit/blender/intern/cycles/kernel/shaders -o K:/BlenderGit/build_windows_Release_x86_vc12_Release/intern/cycles/kernel/shaders/node_glossy_bsdf.oso
+# options: -q -O2 -IC:/b/blender/intern/cycles/kernel/shaders -o C:/b/build_windows_Release_x86_vc12_Release/intern/cycles/kernel/shaders/node_glossy_bsdf.oso
 shader node_glossy_bsdf
 param	color	Color	0.80000001 0.80000001 0.80000001		%read{4,18} %write{2147483647,-1}
 param	string	distribution	"GGX"		%read{1,13} %write{2147483647,-1}
@@ -28,43 +28,43 @@ temp	closure color	$tmp9	%read{18,18} %write{17,17}
 const	vector	$const9	0 0 0		%read{17,17} %write{2147483647,-1}
 const	string	$const10	"ashikhmin_shirley"		%read{17,17} %write{2147483647,-1}
 code Normal
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_glossy_bsdf.osl:24
+# C:/b/blender/intern/cycles/kernel/shaders/node_glossy_bsdf.osl:24
 # 	normal Normal = N,
-	assign		Normal N 	%filename{"K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_glossy_bsdf.osl"} %line{24} %argrw{"wr"}
+	assign		Normal N 	%filename{"C:/b/blender/intern/cycles/kernel/shaders/node_glossy_bsdf.osl"} %line{24} %argrw{"wr"}
 code ___main___
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_glossy_bsdf.osl:27
+# C:/b/blender/intern/cycles/kernel/shaders/node_glossy_bsdf.osl:27
 # 	if (distribution == "sharp")
-	eq		$tmp1 distribution $const1 	%filename{"K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_glossy_bsdf.osl"} %line{27} %argrw{"wrr"}
+	eq		$tmp1 distribution $const1 	%filename{"C:/b/blender/intern/cycles/kernel/shaders/node_glossy_bsdf.osl"} %line{27} %argrw{"wrr"}
 	if		$tmp1 5 19 	%argrw{"r"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_glossy_bsdf.osl:28
+# C:/b/blender/intern/cycles/kernel/shaders/node_glossy_bsdf.osl:28
 # 		BSDF = Color * reflection(Normal);
 	closure		$tmp2 $const2 Normal 	%line{28} %argrw{"wrr"}
 	mul		BSDF $tmp2 Color 	%argrw{"wrr"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_glossy_bsdf.osl:29
+# C:/b/blender/intern/cycles/kernel/shaders/node_glossy_bsdf.osl:29
 # 	else if (distribution == "beckmann")
 	eq		$tmp3 distribution $const3 	%line{29} %argrw{"wrr"}
 	if		$tmp3 9 19 	%argrw{"r"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_glossy_bsdf.osl:30
+# C:/b/blender/intern/cycles/kernel/shaders/node_glossy_bsdf.osl:30
 # 		BSDF = Color * microfacet_beckmann(Normal, Roughness);
 	closure		$tmp4 $const4 Normal Roughness 	%line{30} %argrw{"wrrr"}
 	mul		BSDF $tmp4 Color 	%argrw{"wrr"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_glossy_bsdf.osl:31
+# C:/b/blender/intern/cycles/kernel/shaders/node_glossy_bsdf.osl:31
 # 	else if (distribution == "GGX")
 	eq		$tmp5 distribution $const5 	%line{31} %argrw{"wrr"}
 	if		$tmp5 13 19 	%argrw{"r"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_glossy_bsdf.osl:32
+# C:/b/blender/intern/cycles/kernel/shaders/node_glossy_bsdf.osl:32
 # 		BSDF = Color * microfacet_ggx(Normal, Roughness);
 	closure		$tmp6 $const6 Normal Roughness 	%line{32} %argrw{"wrrr"}
 	mul		BSDF $tmp6 Color 	%argrw{"wrr"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_glossy_bsdf.osl:33
+# C:/b/blender/intern/cycles/kernel/shaders/node_glossy_bsdf.osl:33
 # 	else if (distribution == "Multiscatter GGX")
 	eq		$tmp7 distribution $const7 	%line{33} %argrw{"wrr"}
 	if		$tmp7 17 19 	%argrw{"r"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_glossy_bsdf.osl:34
+# C:/b/blender/intern/cycles/kernel/shaders/node_glossy_bsdf.osl:34
 # 		BSDF = Color * microfacet_multi_ggx(Normal, Roughness, Color);
 	closure		$tmp8 $const8 Normal Roughness Color 	%line{34} %argrw{"wrrrr"}
 	mul		BSDF $tmp8 Color 	%argrw{"wrr"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_glossy_bsdf.osl:36
+# C:/b/blender/intern/cycles/kernel/shaders/node_glossy_bsdf.osl:36
 # 		BSDF = Color * ashikhmin_shirley(Normal, vector(0, 0, 0), Roughness, Roughness);
 	closure		$tmp9 $const10 Normal $const9 Roughness Roughness 	%line{36} %argrw{"wrrrrr"}
 	mul		BSDF $tmp9 Color 	%argrw{"wrr"}

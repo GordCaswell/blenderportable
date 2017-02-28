@@ -1,6 +1,6 @@
 OpenShadingLanguage 1.00
 # Compiled by oslc 1.7.5
-# options: -q -O2 -IK:/BlenderGit/blender/intern/cycles/kernel/shaders -o K:/BlenderGit/build_windows_Release_x64_vc12_Release/intern/cycles/kernel/shaders/node_voronoi_texture.oso
+# options: -q -O2 -IC:/b/blender/intern/cycles/kernel/shaders -o C:/b/build_windows_Release_x64_vc12_Release/intern/cycles/kernel/shaders/node_voronoi_texture.oso
 shader node_voronoi_texture
 param	int	use_mapping	0		%read{2,2} %write{2147483647,-1}
 param	matrix	mapping	0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0		%read{3,3} %write{2147483647,-1}
@@ -106,253 +106,253 @@ temp	float	$tmp68	%read{131,131} %write{129,129}
 const	float	$const10	3		%read{130,130} %write{2147483647,-1}
 temp	float	$tmp69	%read{131,131} %write{130,130}
 code Vector
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_voronoi_texture.osl:27
+# C:/b/blender/intern/cycles/kernel/shaders/node_voronoi_texture.osl:27
 # 	point Vector = P,
-	assign		Vector P 	%filename{"K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_voronoi_texture.osl"} %line{27} %argrw{"wr"}
+	assign		Vector P 	%filename{"C:/b/blender/intern/cycles/kernel/shaders/node_voronoi_texture.osl"} %line{27} %argrw{"wr"}
 code ___main___
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_voronoi_texture.osl:31
+# C:/b/blender/intern/cycles/kernel/shaders/node_voronoi_texture.osl:31
 # 	point p = Vector;
-	assign		p Vector 	%filename{"K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_voronoi_texture.osl"} %line{31} %argrw{"wr"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_voronoi_texture.osl:33
+	assign		p Vector 	%filename{"C:/b/blender/intern/cycles/kernel/shaders/node_voronoi_texture.osl"} %line{31} %argrw{"wr"}
+# C:/b/blender/intern/cycles/kernel/shaders/node_voronoi_texture.osl:33
 # 	if (use_mapping)
 	if		use_mapping 4 4 	%line{33} %argrw{"r"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_voronoi_texture.osl:34
+# C:/b/blender/intern/cycles/kernel/shaders/node_voronoi_texture.osl:34
 # 		p = transform(mapping, p);
 	transform	p mapping p 	%line{34} %argrw{"wrr"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_voronoi_texture.osl:40
+# C:/b/blender/intern/cycles/kernel/shaders/node_voronoi_texture.osl:40
 # 	voronoi(p * Scale, 1.0, da, pa);
 	mul		$tmp1 p Scale 	%line{40} %argrw{"wrr"}
 	functioncall	$const2 106 	%argrw{"r"}
-# K:/BlenderGit\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:33
+# C:/b\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:33
 # 	xi = (int)floor(p[0]);
-	compref		$tmp3 $tmp1 $const3 	%filename{"K:/BlenderGit\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h"} %line{33} %argrw{"wrr"}
+	compref		$tmp3 $tmp1 $const3 	%filename{"C:/b\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h"} %line{33} %argrw{"wrr"}
 	floor		$tmp2 $tmp3 	%argrw{"wr"}
 	assign		___638_xi $tmp2 	%argrw{"wr"}
-# K:/BlenderGit\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:34
+# C:/b\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:34
 # 	yi = (int)floor(p[1]);
 	compref		$tmp5 $tmp1 $const4 	%line{34} %argrw{"wrr"}
 	floor		$tmp4 $tmp5 	%argrw{"wr"}
 	assign		___638_yi $tmp4 	%argrw{"wr"}
-# K:/BlenderGit\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:35
+# C:/b\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:35
 # 	zi = (int)floor(p[2]);
 	compref		$tmp7 $tmp1 $const5 	%line{35} %argrw{"wrr"}
 	floor		$tmp6 $tmp7 	%argrw{"wr"}
 	assign		___638_zi $tmp6 	%argrw{"wr"}
-# K:/BlenderGit\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:37
+# C:/b\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:37
 # 	da[0] = 1e10;
 	aassign		da $const3 $const6 	%line{37} %argrw{"wrr"}
-# K:/BlenderGit\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:38
+# C:/b\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:38
 # 	da[1] = 1e10;
 	aassign		da $const4 $const6 	%line{38} %argrw{"wrr"}
-# K:/BlenderGit\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:39
+# C:/b\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:39
 # 	da[2] = 1e10;
 	aassign		da $const5 $const6 	%line{39} %argrw{"wrr"}
-# K:/BlenderGit\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:40
+# C:/b\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:40
 # 	da[3] = 1e10;
 	aassign		da $const7 $const6 	%line{40} %argrw{"wrr"}
-# K:/BlenderGit\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:42
+# C:/b\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:42
 # 	for (xx = xi - 1; xx <= xi + 1; xx++) {
 	for		$tmp9 21 23 104 106 	%line{42} %argrw{"r"}
 	sub		___638_xx ___638_xi $const4 	%argrw{"wrr"}
 	add		$tmp8 ___638_xi $const4 	%argrw{"wrr"}
 	le		$tmp9 ___638_xx $tmp8 	%argrw{"wrr"}
-# K:/BlenderGit\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:43
+# C:/b\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:43
 # 		for (yy = yi - 1; yy <= yi + 1; yy++) {
 	for		$tmp11 25 27 102 104 	%line{43} %argrw{"r"}
 	sub		___638_yy ___638_yi $const4 	%argrw{"wrr"}
 	add		$tmp10 ___638_yi $const4 	%argrw{"wrr"}
 	le		$tmp11 ___638_yy $tmp10 	%argrw{"wrr"}
-# K:/BlenderGit\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:44
+# C:/b\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:44
 # 			for (zz = zi - 1; zz <= zi + 1; zz++) {
 	for		$tmp13 29 31 100 102 	%line{44} %argrw{"r"}
 	sub		___638_zz ___638_zi $const4 	%argrw{"wrr"}
 	add		$tmp12 ___638_zi $const4 	%argrw{"wrr"}
 	le		$tmp13 ___638_zz $tmp12 	%argrw{"wrr"}
-# K:/BlenderGit\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:45
+# C:/b\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:45
 # 				point ip = point(xx, yy, zz);
 	assign		$tmp14 ___638_xx 	%line{45} %argrw{"wr"}
 	assign		$tmp15 ___638_yy 	%argrw{"wr"}
 	assign		$tmp16 ___638_zz 	%argrw{"wr"}
 	point		___644_ip $tmp14 $tmp15 $tmp16 	%argrw{"wrrr"}
-# K:/BlenderGit\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:46
+# C:/b\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:46
 # 				point vp = (point)cellnoise_color(ip);
 	functioncall	$const8 48 	%line{46} %argrw{"r"}
-# K:/BlenderGit\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:21
+# C:/b\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:21
 # 	float r = cellnoise(p);
 	cellnoise	___637_r ___644_ip 	%line{21} %argrw{"wr"}
-# K:/BlenderGit\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:22
+# C:/b\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:22
 # 	float g = cellnoise(point(p[1], p[0], p[2]));
 	compref		$tmp18 ___644_ip $const4 	%line{22} %argrw{"wrr"}
 	compref		$tmp19 ___644_ip $const3 	%argrw{"wrr"}
 	compref		$tmp20 ___644_ip $const5 	%argrw{"wrr"}
 	point		$tmp17 $tmp18 $tmp19 $tmp20 	%argrw{"wrrr"}
 	cellnoise	___637_g $tmp17 	%argrw{"wr"}
-# K:/BlenderGit\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:23
+# C:/b\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:23
 # 	float b = cellnoise(point(p[1], p[2], p[0]));
 	compref		$tmp22 ___644_ip $const4 	%line{23} %argrw{"wrr"}
 	compref		$tmp23 ___644_ip $const5 	%argrw{"wrr"}
 	compref		$tmp24 ___644_ip $const3 	%argrw{"wrr"}
 	point		$tmp21 $tmp22 $tmp23 $tmp24 	%argrw{"wrrr"}
 	cellnoise	___637_b $tmp21 	%argrw{"wr"}
-# K:/BlenderGit\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:25
+# C:/b\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:25
 # 	return color(r, g, b);
 	color		___644_vp ___637_r ___637_g ___637_b 	%line{25} %argrw{"wrrr"}
-# K:/BlenderGit\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:47
+# C:/b\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:47
 # 				point pd = p - (vp + ip);
 	add		$tmp25 ___644_vp ___644_ip 	%line{47} %argrw{"wrr"}
 	sub		___644_pd $tmp1 $tmp25 	%argrw{"wrr"}
-# K:/BlenderGit\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:48
+# C:/b\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:48
 # 				float d = dot(pd, pd);
 	dot		___644_d ___644_pd ___644_pd 	%line{48} %argrw{"wrr"}
-# K:/BlenderGit\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:50
+# C:/b\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:50
 # 				vp += point(xx, yy, zz);
 	assign		$tmp27 ___638_xx 	%line{50} %argrw{"wr"}
 	assign		$tmp28 ___638_yy 	%argrw{"wr"}
 	assign		$tmp29 ___638_zz 	%argrw{"wr"}
 	point		$tmp26 $tmp27 $tmp28 $tmp29 	%argrw{"wrrr"}
 	add		___644_vp ___644_vp $tmp26 	%argrw{"wrr"}
-# K:/BlenderGit\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:52
+# C:/b\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:52
 # 				if (d < da[0]) {
 	aref		$tmp30 da $const3 	%line{52} %argrw{"wrr"}
 	lt		$tmp31 ___644_d $tmp30 	%argrw{"wrr"}
 	if		$tmp31 73 100 	%argrw{"r"}
-# K:/BlenderGit\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:53
+# C:/b\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:53
 # 					da[3] = da[2];
 	aref		$tmp32 da $const5 	%line{53} %argrw{"wrr"}
 	aassign		da $const7 $tmp32 	%argrw{"wrr"}
-# K:/BlenderGit\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:54
+# C:/b\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:54
 # 					da[2] = da[1];
 	aref		$tmp33 da $const4 	%line{54} %argrw{"wrr"}
 	aassign		da $const5 $tmp33 	%argrw{"wrr"}
-# K:/BlenderGit\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:55
+# C:/b\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:55
 # 					da[1] = da[0];
 	aref		$tmp34 da $const3 	%line{55} %argrw{"wrr"}
 	aassign		da $const4 $tmp34 	%argrw{"wrr"}
-# K:/BlenderGit\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:56
+# C:/b\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:56
 # 					da[0] = d;
 	aassign		da $const3 ___644_d 	%line{56} %argrw{"wrr"}
-# K:/BlenderGit\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:58
+# C:/b\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:58
 # 					pa[3] = pa[2];
 	aref		$tmp35 pa $const5 	%line{58} %argrw{"wrr"}
 	aassign		pa $const7 $tmp35 	%argrw{"wrr"}
-# K:/BlenderGit\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:59
+# C:/b\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:59
 # 					pa[2] = pa[1];
 	aref		$tmp36 pa $const4 	%line{59} %argrw{"wrr"}
 	aassign		pa $const5 $tmp36 	%argrw{"wrr"}
-# K:/BlenderGit\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:60
+# C:/b\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:60
 # 					pa[1] = pa[0];
 	aref		$tmp37 pa $const3 	%line{60} %argrw{"wrr"}
 	aassign		pa $const4 $tmp37 	%argrw{"wrr"}
-# K:/BlenderGit\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:61
+# C:/b\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:61
 # 					pa[0] = vp;
 	aassign		pa $const3 ___644_vp 	%line{61} %argrw{"wrr"}
-# K:/BlenderGit\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:63
+# C:/b\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:63
 # 				else if (d < da[1]) {
 	aref		$tmp38 da $const4 	%line{63} %argrw{"wrr"}
 	lt		$tmp39 ___644_d $tmp38 	%argrw{"wrr"}
 	if		$tmp39 86 100 	%argrw{"r"}
-# K:/BlenderGit\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:64
+# C:/b\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:64
 # 					da[3] = da[2];
 	aref		$tmp40 da $const5 	%line{64} %argrw{"wrr"}
 	aassign		da $const7 $tmp40 	%argrw{"wrr"}
-# K:/BlenderGit\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:65
+# C:/b\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:65
 # 					da[2] = da[1];
 	aref		$tmp41 da $const4 	%line{65} %argrw{"wrr"}
 	aassign		da $const5 $tmp41 	%argrw{"wrr"}
-# K:/BlenderGit\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:66
+# C:/b\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:66
 # 					da[1] = d;
 	aassign		da $const4 ___644_d 	%line{66} %argrw{"wrr"}
-# K:/BlenderGit\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:68
+# C:/b\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:68
 # 					pa[3] = pa[2];
 	aref		$tmp42 pa $const5 	%line{68} %argrw{"wrr"}
 	aassign		pa $const7 $tmp42 	%argrw{"wrr"}
-# K:/BlenderGit\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:69
+# C:/b\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:69
 # 					pa[2] = pa[1];
 	aref		$tmp43 pa $const4 	%line{69} %argrw{"wrr"}
 	aassign		pa $const5 $tmp43 	%argrw{"wrr"}
-# K:/BlenderGit\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:70
+# C:/b\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:70
 # 					pa[1] = vp;
 	aassign		pa $const4 ___644_vp 	%line{70} %argrw{"wrr"}
-# K:/BlenderGit\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:72
+# C:/b\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:72
 # 				else if (d < da[2]) {
 	aref		$tmp44 da $const5 	%line{72} %argrw{"wrr"}
 	lt		$tmp45 ___644_d $tmp44 	%argrw{"wrr"}
 	if		$tmp45 95 100 	%argrw{"r"}
-# K:/BlenderGit\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:73
+# C:/b\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:73
 # 					da[3] = da[2];
 	aref		$tmp46 da $const5 	%line{73} %argrw{"wrr"}
 	aassign		da $const7 $tmp46 	%argrw{"wrr"}
-# K:/BlenderGit\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:74
+# C:/b\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:74
 # 					da[2] = d;
 	aassign		da $const5 ___644_d 	%line{74} %argrw{"wrr"}
-# K:/BlenderGit\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:76
+# C:/b\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:76
 # 					pa[3] = pa[2];
 	aref		$tmp47 pa $const5 	%line{76} %argrw{"wrr"}
 	aassign		pa $const7 $tmp47 	%argrw{"wrr"}
-# K:/BlenderGit\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:77
+# C:/b\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:77
 # 					pa[2] = vp;
 	aassign		pa $const5 ___644_vp 	%line{77} %argrw{"wrr"}
-# K:/BlenderGit\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:79
+# C:/b\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:79
 # 				else if (d < da[3]) {
 	aref		$tmp48 da $const7 	%line{79} %argrw{"wrr"}
 	lt		$tmp49 ___644_d $tmp48 	%argrw{"wrr"}
 	if		$tmp49 100 100 	%argrw{"r"}
-# K:/BlenderGit\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:80
+# C:/b\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:80
 # 					da[3] = d;
 	aassign		da $const7 ___644_d 	%line{80} %argrw{"wrr"}
-# K:/BlenderGit\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:81
+# C:/b\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:81
 # 					pa[3] = vp;
 	aassign		pa $const7 ___644_vp 	%line{81} %argrw{"wrr"}
-# K:/BlenderGit\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:44
+# C:/b\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:44
 # 			for (zz = zi - 1; zz <= zi + 1; zz++) {
 	assign		$tmp50 ___638_zz 	%line{44} %argrw{"wr"}
 	add		___638_zz ___638_zz $const4 	%argrw{"wrr"}
-# K:/BlenderGit\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:43
+# C:/b\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:43
 # 		for (yy = yi - 1; yy <= yi + 1; yy++) {
 	assign		$tmp51 ___638_yy 	%line{43} %argrw{"wr"}
 	add		___638_yy ___638_yy $const4 	%argrw{"wrr"}
-# K:/BlenderGit\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:42
+# C:/b\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:42
 # 	for (xx = xi - 1; xx <= xi + 1; xx++) {
 	assign		$tmp52 ___638_xx 	%line{42} %argrw{"wr"}
 	add		___638_xx ___638_xx $const4 	%argrw{"wrr"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_voronoi_texture.osl:43
+# C:/b/blender/intern/cycles/kernel/shaders/node_voronoi_texture.osl:43
 # /*
-	eq		$tmp53 coloring $const9 	%filename{"K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_voronoi_texture.osl"} %line{43} %argrw{"wrr"}
+	eq		$tmp53 coloring $const9 	%filename{"C:/b/blender/intern/cycles/kernel/shaders/node_voronoi_texture.osl"} %line{43} %argrw{"wrr"}
 	if		$tmp53 111 132 	%argrw{"r"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_voronoi_texture.osl:44
+# C:/b/blender/intern/cycles/kernel/shaders/node_voronoi_texture.osl:44
 #  * Copyright 2011-2013 Blender Foundation
 	aref		$tmp54 da $const3 	%line{44} %argrw{"wrr"}
 	fabs		Fac $tmp54 	%argrw{"wr"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_voronoi_texture.osl:45
+# C:/b/blender/intern/cycles/kernel/shaders/node_voronoi_texture.osl:45
 #  *
 	assign		Color Fac 	%line{45} %argrw{"wr"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_voronoi_texture.osl:48
+# C:/b/blender/intern/cycles/kernel/shaders/node_voronoi_texture.osl:48
 #  * You may obtain a copy of the License at
 	aref		$tmp55 pa $const3 	%line{48} %argrw{"wrr"}
 	functioncall	$const8 125 	%argrw{"r"}
-# K:/BlenderGit\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:21
+# C:/b\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:21
 # 	float r = cellnoise(p);
-	cellnoise	___637_r $tmp55 	%filename{"K:/BlenderGit\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h"} %line{21} %argrw{"wr"}
-# K:/BlenderGit\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:22
+	cellnoise	___637_r $tmp55 	%filename{"C:/b\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h"} %line{21} %argrw{"wr"}
+# C:/b\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:22
 # 	float g = cellnoise(point(p[1], p[0], p[2]));
 	compref		$tmp57 $tmp55 $const4 	%line{22} %argrw{"wrr"}
 	compref		$tmp58 $tmp55 $const3 	%argrw{"wrr"}
 	compref		$tmp59 $tmp55 $const5 	%argrw{"wrr"}
 	point		$tmp56 $tmp57 $tmp58 $tmp59 	%argrw{"wrrr"}
 	cellnoise	___637_g $tmp56 	%argrw{"wr"}
-# K:/BlenderGit\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:23
+# C:/b\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:23
 # 	float b = cellnoise(point(p[1], p[2], p[0]));
 	compref		$tmp61 $tmp55 $const4 	%line{23} %argrw{"wrr"}
 	compref		$tmp62 $tmp55 $const5 	%argrw{"wrr"}
 	compref		$tmp63 $tmp55 $const3 	%argrw{"wrr"}
 	point		$tmp60 $tmp61 $tmp62 $tmp63 	%argrw{"wrrr"}
 	cellnoise	___637_b $tmp60 	%argrw{"wr"}
-# K:/BlenderGit\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:25
+# C:/b\\blender\\intern\\cycles\\kernel\\shaders\\node_texture.h:25
 # 	return color(r, g, b);
 	color		Color ___637_r ___637_g ___637_b 	%line{25} %argrw{"wrrr"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_voronoi_texture.osl:49
+# C:/b/blender/intern/cycles/kernel/shaders/node_voronoi_texture.osl:49
 # 	matrix mapping = matrix(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
-	compref		$tmp64 Color $const3 	%filename{"K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_voronoi_texture.osl"} %line{49} %argrw{"wrr"}
+	compref		$tmp64 Color $const3 	%filename{"C:/b/blender/intern/cycles/kernel/shaders/node_voronoi_texture.osl"} %line{49} %argrw{"wrr"}
 	compref		$tmp65 Color $const4 	%argrw{"wrr"}
 	add		$tmp66 $tmp64 $tmp65 	%argrw{"wrr"}
 	compref		$tmp67 Color $const5 	%argrw{"wrr"}

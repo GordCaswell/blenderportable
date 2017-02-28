@@ -1,6 +1,6 @@
 OpenShadingLanguage 1.00
 # Compiled by oslc 1.7.5
-# options: -q -O2 -IK:/BlenderGit/blender/intern/cycles/kernel/shaders -o K:/BlenderGit/build_windows_Release_x64_vc12_Release/intern/cycles/kernel/shaders/node_normal_map.oso
+# options: -q -O2 -IC:/b/blender/intern/cycles/kernel/shaders -o C:/b/build_windows_Release_x64_vc12_Release/intern/cycles/kernel/shaders/node_normal_map.oso
 shader node_normal_map
 param	normal	NormalIn	0 0 0		%read{1,88} %write{0,0} %initexpr
 param	float	Strength	1		%read{83,86} %write{2147483647,-1}
@@ -88,17 +88,17 @@ temp	float	$tmp52	%read{87,87} %write{86,86}
 temp	normal	$tmp53	%read{88,88} %write{87,87}
 temp	normal	$tmp54	%read{89,89} %write{88,88}
 code NormalIn
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_normal_map.osl:20
+# C:/b/blender/intern/cycles/kernel/shaders/node_normal_map.osl:20
 # 	normal NormalIn = N,
-	assign		NormalIn N 	%filename{"K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_normal_map.osl"} %line{20} %argrw{"wr"}
+	assign		NormalIn N 	%filename{"C:/b/blender/intern/cycles/kernel/shaders/node_normal_map.osl"} %line{20} %argrw{"wr"}
 code Normal
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_normal_map.osl:26
+# C:/b/blender/intern/cycles/kernel/shaders/node_normal_map.osl:26
 # 	output normal Normal = NormalIn)
-	assign		Normal NormalIn 	%filename{"K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_normal_map.osl"} %line{26} %argrw{"wr"}
+	assign		Normal NormalIn 	%filename{"C:/b/blender/intern/cycles/kernel/shaders/node_normal_map.osl"} %line{26} %argrw{"wr"}
 code ___main___
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_normal_map.osl:28
+# C:/b/blender/intern/cycles/kernel/shaders/node_normal_map.osl:28
 # 	color mcolor = 2.0 * color(Color[0] - 0.5, Color[1] - 0.5, Color[2] - 0.5);
-	compref		$tmp2 Color $const2 	%filename{"K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_normal_map.osl"} %line{28} %argrw{"wrr"}
+	compref		$tmp2 Color $const2 	%filename{"C:/b/blender/intern/cycles/kernel/shaders/node_normal_map.osl"} %line{28} %argrw{"wrr"}
 	sub		$tmp3 $tmp2 $const3 	%argrw{"wrr"}
 	compref		$tmp4 Color $const4 	%argrw{"wrr"}
 	sub		$tmp5 $tmp4 $const3 	%argrw{"wrr"}
@@ -106,42 +106,42 @@ code ___main___
 	sub		$tmp7 $tmp6 $const3 	%argrw{"wrr"}
 	color		$tmp1 $tmp3 $tmp5 $tmp7 	%argrw{"wrrr"}
 	mul		mcolor $const1 $tmp1 	%argrw{"wrr"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_normal_map.osl:29
+# C:/b/blender/intern/cycles/kernel/shaders/node_normal_map.osl:29
 # 	int is_backfacing = backfacing();
 	backfacing	is_backfacing 	%line{29} %argrw{"w"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_normal_map.osl:31
+# C:/b/blender/intern/cycles/kernel/shaders/node_normal_map.osl:31
 # 	if (space == "tangent") {
 	eq		$tmp8 space $const6 	%line{31} %argrw{"wrr"}
 	if		$tmp8 51 81 	%argrw{"r"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_normal_map.osl:37
+# C:/b/blender/intern/cycles/kernel/shaders/node_normal_map.osl:37
 # 		getattribute("geom:is_smooth", is_smooth);
 	getattribute	$tmp9 $const7 ___637_is_smooth 	%line{37} %argrw{"wrw"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_normal_map.osl:38
+# C:/b/blender/intern/cycles/kernel/shaders/node_normal_map.osl:38
 # 		if (!is_smooth) {
 	eq		$tmp10 ___637_is_smooth $const8 	%line{38} %argrw{"wrr"}
 	if		$tmp10 20 20 	%argrw{"r"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_normal_map.osl:39
+# C:/b/blender/intern/cycles/kernel/shaders/node_normal_map.osl:39
 # 			ninterp = normalize(transform("world", "object", Ng));
 	transformn	$tmp11 $const9 $const10 Ng 	%line{39} %argrw{"wrrr"}
 	normalize	___637_ninterp $tmp11 	%argrw{"wr"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_normal_map.osl:42
+# C:/b/blender/intern/cycles/kernel/shaders/node_normal_map.osl:42
 # 			if (is_backfacing) {
 	if		is_backfacing 20 20 	%line{42} %argrw{"r"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_normal_map.osl:43
+# C:/b/blender/intern/cycles/kernel/shaders/node_normal_map.osl:43
 # 				ninterp = -ninterp;
 	neg		___637_ninterp ___637_ninterp 	%line{43} %argrw{"wr"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_normal_map.osl:48
+# C:/b/blender/intern/cycles/kernel/shaders/node_normal_map.osl:48
 # 		if (getattribute(attr_name, tangent) &&
 	getattribute	$tmp12 attr_name ___637_tangent 	%line{48} %argrw{"wrw"}
 	neq		$tmp13 $tmp12 $const2 	%argrw{"wrr"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_normal_map.osl:49
+# C:/b/blender/intern/cycles/kernel/shaders/node_normal_map.osl:49
 # 		    getattribute(attr_sign_name, tangent_sign) &&
 	if		$tmp13 26 26 	%line{49} %argrw{"r"}
 	getattribute	$tmp14 attr_sign_name ___637_tangent_sign 	%argrw{"wrw"}
 	neq		$tmp15 $tmp14 $const2 	%argrw{"wrr"}
 	assign		$tmp13 $tmp15 	%argrw{"wr"}
 	neq		$tmp16 $tmp13 $const2 	%argrw{"wrr"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_normal_map.osl:50
+# C:/b/blender/intern/cycles/kernel/shaders/node_normal_map.osl:50
 # 		    (!is_smooth || getattribute("geom:N", ninterp)))
 	if		$tmp16 36 36 	%line{50} %argrw{"r"}
 	eq		$tmp17 ___637_is_smooth $const8 	%argrw{"wrr"}
@@ -152,14 +152,14 @@ code ___main___
 	assign		$tmp18 $tmp20 	%argrw{"wr"}
 	neq		$tmp21 $tmp18 $const2 	%argrw{"wrr"}
 	assign		$tmp16 $tmp21 	%argrw{"wr"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_normal_map.osl:48
+# C:/b/blender/intern/cycles/kernel/shaders/node_normal_map.osl:48
 # 		if (getattribute(attr_name, tangent) &&
 	if		$tmp16 50 51 	%line{48} %argrw{"r"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_normal_map.osl:53
+# C:/b/blender/intern/cycles/kernel/shaders/node_normal_map.osl:53
 # 			vector B = tangent_sign * cross(ninterp, tangent);
 	cross		$tmp22 ___637_ninterp ___637_tangent 	%line{53} %argrw{"wrr"}
 	mul		___640_B ___637_tangent_sign $tmp22 	%argrw{"wrr"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_normal_map.osl:54
+# C:/b/blender/intern/cycles/kernel/shaders/node_normal_map.osl:54
 # 			Normal = normalize(mcolor[0] * tangent + mcolor[1] * B + mcolor[2] * ninterp);
 	compref		$tmp23 mcolor $const2 	%line{54} %argrw{"wrr"}
 	mul		$tmp24 $tmp23 ___637_tangent 	%argrw{"wrr"}
@@ -170,78 +170,78 @@ code ___main___
 	mul		$tmp29 $tmp28 ___637_ninterp 	%argrw{"wrr"}
 	add		$tmp30 $tmp27 $tmp29 	%argrw{"wrr"}
 	normalize	Normal $tmp30 	%argrw{"wr"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_normal_map.osl:57
+# C:/b/blender/intern/cycles/kernel/shaders/node_normal_map.osl:57
 # 			Normal = normalize(transform("object", "world", Normal));
 	transformn	$tmp31 $const10 $const9 Normal 	%line{57} %argrw{"wrrr"}
 	normalize	Normal $tmp31 	%argrw{"wr"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_normal_map.osl:60
+# C:/b/blender/intern/cycles/kernel/shaders/node_normal_map.osl:60
 # 			Normal = normal(0, 0, 0);
 	assign		Normal $const12 	%line{60} %argrw{"wr"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_normal_map.osl:63
+# C:/b/blender/intern/cycles/kernel/shaders/node_normal_map.osl:63
 # 	else if (space == "object") {
 	eq		$tmp32 space $const10 	%line{63} %argrw{"wrr"}
 	if		$tmp32 56 81 	%argrw{"r"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_normal_map.osl:64
+# C:/b/blender/intern/cycles/kernel/shaders/node_normal_map.osl:64
 # 		Normal = normalize(transform("object", "world", vector(mcolor)));
 	assign		$tmp34 mcolor 	%line{64} %argrw{"wr"}
 	transformv	$tmp33 $const10 $const9 $tmp34 	%argrw{"wrrr"}
 	normalize	Normal $tmp33 	%argrw{"wr"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_normal_map.osl:66
+# C:/b/blender/intern/cycles/kernel/shaders/node_normal_map.osl:66
 # 	else if (space == "world") {
 	eq		$tmp35 space $const9 	%line{66} %argrw{"wrr"}
 	if		$tmp35 60 81 	%argrw{"r"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_normal_map.osl:67
+# C:/b/blender/intern/cycles/kernel/shaders/node_normal_map.osl:67
 # 		Normal = normalize(vector(mcolor));
 	assign		$tmp36 mcolor 	%line{67} %argrw{"wr"}
 	normalize	Normal $tmp36 	%argrw{"wr"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_normal_map.osl:69
+# C:/b/blender/intern/cycles/kernel/shaders/node_normal_map.osl:69
 # 	else if (space == "blender_object") {
 	eq		$tmp37 space $const13 	%line{69} %argrw{"wrr"}
 	if		$tmp37 71 81 	%argrw{"r"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_normal_map.osl:71
+# C:/b/blender/intern/cycles/kernel/shaders/node_normal_map.osl:71
 # 		mcolor[1] = -mcolor[1];
 	compref		$tmp38 mcolor $const4 	%line{71} %argrw{"wrr"}
 	neg		$tmp39 $tmp38 	%argrw{"wr"}
 	compassign	mcolor $const4 $tmp39 	%argrw{"wrr"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_normal_map.osl:72
+# C:/b/blender/intern/cycles/kernel/shaders/node_normal_map.osl:72
 # 		mcolor[2] = -mcolor[2];
 	compref		$tmp40 mcolor $const5 	%line{72} %argrw{"wrr"}
 	neg		$tmp41 $tmp40 	%argrw{"wr"}
 	compassign	mcolor $const5 $tmp41 	%argrw{"wrr"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_normal_map.osl:74
+# C:/b/blender/intern/cycles/kernel/shaders/node_normal_map.osl:74
 # 		Normal = normalize(transform("object", "world", vector(mcolor)));
 	assign		$tmp43 mcolor 	%line{74} %argrw{"wr"}
 	transformv	$tmp42 $const10 $const9 $tmp43 	%argrw{"wrrr"}
 	normalize	Normal $tmp42 	%argrw{"wr"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_normal_map.osl:76
+# C:/b/blender/intern/cycles/kernel/shaders/node_normal_map.osl:76
 # 	else if (space == "blender_world") {
 	eq		$tmp44 space $const14 	%line{76} %argrw{"wrr"}
 	if		$tmp44 81 81 	%argrw{"r"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_normal_map.osl:78
+# C:/b/blender/intern/cycles/kernel/shaders/node_normal_map.osl:78
 # 		mcolor[1] = -mcolor[1];
 	compref		$tmp45 mcolor $const4 	%line{78} %argrw{"wrr"}
 	neg		$tmp46 $tmp45 	%argrw{"wr"}
 	compassign	mcolor $const4 $tmp46 	%argrw{"wrr"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_normal_map.osl:79
+# C:/b/blender/intern/cycles/kernel/shaders/node_normal_map.osl:79
 # 		mcolor[2] = -mcolor[2];
 	compref		$tmp47 mcolor $const5 	%line{79} %argrw{"wrr"}
 	neg		$tmp48 $tmp47 	%argrw{"wr"}
 	compassign	mcolor $const5 $tmp48 	%argrw{"wrr"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_normal_map.osl:81
+# C:/b/blender/intern/cycles/kernel/shaders/node_normal_map.osl:81
 # 		Normal = normalize(vector(mcolor));
 	assign		$tmp49 mcolor 	%line{81} %argrw{"wr"}
 	normalize	Normal $tmp49 	%argrw{"wr"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_normal_map.osl:85
+# C:/b/blender/intern/cycles/kernel/shaders/node_normal_map.osl:85
 # 	if (is_backfacing) {
 	if		is_backfacing 83 83 	%line{85} %argrw{"r"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_normal_map.osl:86
+# C:/b/blender/intern/cycles/kernel/shaders/node_normal_map.osl:86
 # 		Normal = -Normal;
 	neg		Normal Normal 	%line{86} %argrw{"wr"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_normal_map.osl:89
+# C:/b/blender/intern/cycles/kernel/shaders/node_normal_map.osl:89
 # 	if (Strength != 1.0)
 	neq		$tmp50 Strength $const15 	%line{89} %argrw{"wrr"}
 	if		$tmp50 90 90 	%argrw{"r"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_normal_map.osl:90
+# C:/b/blender/intern/cycles/kernel/shaders/node_normal_map.osl:90
 # 		Normal = normalize(NormalIn + (Normal - NormalIn) * max(Strength, 0.0));
 	sub		$tmp51 Normal NormalIn 	%line{90} %argrw{"wrr"}
 	max		$tmp52 Strength $const8 	%argrw{"wrr"}

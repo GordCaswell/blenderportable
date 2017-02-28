@@ -1,6 +1,6 @@
 OpenShadingLanguage 1.00
 # Compiled by oslc 1.7.5
-# options: -q -O2 -IK:/BlenderGit/blender/intern/cycles/kernel/shaders -o K:/BlenderGit/build_windows_Release_x64_vc12_Release/intern/cycles/kernel/shaders/node_gradient_texture.oso
+# options: -q -O2 -IC:/b/blender/intern/cycles/kernel/shaders -o C:/b/build_windows_Release_x64_vc12_Release/intern/cycles/kernel/shaders/node_gradient_texture.oso
 shader node_gradient_texture
 param	int	use_mapping	0		%read{2,2} %write{2147483647,-1}
 param	matrix	mapping	0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0		%read{3,3} %write{2147483647,-1}
@@ -57,86 +57,86 @@ temp	int	$tmp20	%read{43,43} %write{42,42}
 const	string	$const17	"spherical"		%read{45,45} %write{2147483647,-1}
 temp	int	$tmp21	%read{46,46} %write{45,45}
 code Vector
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_gradient_texture.osl:67
+# C:/b/blender/intern/cycles/kernel/shaders/node_gradient_texture.osl:67
 # 	point Vector = P,
-	assign		Vector P 	%filename{"K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_gradient_texture.osl"} %line{67} %argrw{"wr"}
+	assign		Vector P 	%filename{"C:/b/blender/intern/cycles/kernel/shaders/node_gradient_texture.osl"} %line{67} %argrw{"wr"}
 code ___main___
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_gradient_texture.osl:71
+# C:/b/blender/intern/cycles/kernel/shaders/node_gradient_texture.osl:71
 # 	point p = Vector;
-	assign		p Vector 	%filename{"K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_gradient_texture.osl"} %line{71} %argrw{"wr"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_gradient_texture.osl:73
+	assign		p Vector 	%filename{"C:/b/blender/intern/cycles/kernel/shaders/node_gradient_texture.osl"} %line{71} %argrw{"wr"}
+# C:/b/blender/intern/cycles/kernel/shaders/node_gradient_texture.osl:73
 # 	if (use_mapping)
 	if		use_mapping 4 4 	%line{73} %argrw{"r"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_gradient_texture.osl:74
+# C:/b/blender/intern/cycles/kernel/shaders/node_gradient_texture.osl:74
 # 		p = transform(mapping, p);
 	transform	p mapping p 	%line{74} %argrw{"wrr"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_gradient_texture.osl:76
+# C:/b/blender/intern/cycles/kernel/shaders/node_gradient_texture.osl:76
 # 	Fac = gradient(p, type);
 	functioncall	$const1 49 	%line{76} %argrw{"r"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_gradient_texture.osl:26
+# C:/b/blender/intern/cycles/kernel/shaders/node_gradient_texture.osl:26
 # 	x = p[0];
 	compref		___656_x p $const2 	%line{26} %argrw{"wrr"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_gradient_texture.osl:27
+# C:/b/blender/intern/cycles/kernel/shaders/node_gradient_texture.osl:27
 # 	y = p[1];
 	compref		___656_y p $const3 	%line{27} %argrw{"wrr"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_gradient_texture.osl:28
+# C:/b/blender/intern/cycles/kernel/shaders/node_gradient_texture.osl:28
 # 	z = p[2];
 	compref		___656_z p $const4 	%line{28} %argrw{"wrr"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_gradient_texture.osl:30
+# C:/b/blender/intern/cycles/kernel/shaders/node_gradient_texture.osl:30
 # 	float result = 0.0;
 	assign		___656_result $const5 	%line{30} %argrw{"wr"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_gradient_texture.osl:32
+# C:/b/blender/intern/cycles/kernel/shaders/node_gradient_texture.osl:32
 # 	if (type == "linear") {
 	eq		$tmp1 type $const6 	%line{32} %argrw{"wrr"}
 	if		$tmp1 12 48 	%argrw{"r"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_gradient_texture.osl:33
+# C:/b/blender/intern/cycles/kernel/shaders/node_gradient_texture.osl:33
 # 		result = x;
 	assign		___656_result ___656_x 	%line{33} %argrw{"wr"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_gradient_texture.osl:35
+# C:/b/blender/intern/cycles/kernel/shaders/node_gradient_texture.osl:35
 # 	else if (type == "quadratic") {
 	eq		$tmp2 type $const7 	%line{35} %argrw{"wrr"}
 	if		$tmp2 16 48 	%argrw{"r"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_gradient_texture.osl:36
+# C:/b/blender/intern/cycles/kernel/shaders/node_gradient_texture.osl:36
 # 		float r = max(x, 0.0);
 	max		___658_r ___656_x $const5 	%line{36} %argrw{"wrr"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_gradient_texture.osl:37
+# C:/b/blender/intern/cycles/kernel/shaders/node_gradient_texture.osl:37
 # 		result = r * r;
 	mul		___656_result ___658_r ___658_r 	%line{37} %argrw{"wrr"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_gradient_texture.osl:39
+# C:/b/blender/intern/cycles/kernel/shaders/node_gradient_texture.osl:39
 # 	else if (type == "easing") {
 	eq		$tmp3 type $const8 	%line{39} %argrw{"wrr"}
 	if		$tmp3 25 48 	%argrw{"r"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_gradient_texture.osl:40
+# C:/b/blender/intern/cycles/kernel/shaders/node_gradient_texture.osl:40
 # 		float r = min(max(x, 0.0), 1.0);
 	max		$tmp4 ___656_x $const5 	%line{40} %argrw{"wrr"}
 	min		___659_r $tmp4 $const9 	%argrw{"wrr"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_gradient_texture.osl:41
+# C:/b/blender/intern/cycles/kernel/shaders/node_gradient_texture.osl:41
 # 		float t = r * r;
 	mul		___659_t ___659_r ___659_r 	%line{41} %argrw{"wrr"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_gradient_texture.osl:43
+# C:/b/blender/intern/cycles/kernel/shaders/node_gradient_texture.osl:43
 # 		result = (3.0 * t - 2.0 * t * r);
 	mul		$tmp5 $const10 ___659_t 	%line{43} %argrw{"wrr"}
 	mul		$tmp6 $const11 ___659_t 	%argrw{"wrr"}
 	mul		$tmp7 $tmp6 ___659_r 	%argrw{"wrr"}
 	sub		___656_result $tmp5 $tmp7 	%argrw{"wrr"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_gradient_texture.osl:45
+# C:/b/blender/intern/cycles/kernel/shaders/node_gradient_texture.osl:45
 # 	else if (type == "diagonal") {
 	eq		$tmp8 type $const12 	%line{45} %argrw{"wrr"}
 	if		$tmp8 29 48 	%argrw{"r"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_gradient_texture.osl:46
+# C:/b/blender/intern/cycles/kernel/shaders/node_gradient_texture.osl:46
 # 		result = (x + y) * 0.5;
 	add		$tmp9 ___656_x ___656_y 	%line{46} %argrw{"wrr"}
 	mul		___656_result $tmp9 $const13 	%argrw{"wrr"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_gradient_texture.osl:48
+# C:/b/blender/intern/cycles/kernel/shaders/node_gradient_texture.osl:48
 # 	else if (type == "radial") {
 	eq		$tmp10 type $const14 	%line{48} %argrw{"wrr"}
 	if		$tmp10 34 48 	%argrw{"r"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_gradient_texture.osl:49
+# C:/b/blender/intern/cycles/kernel/shaders/node_gradient_texture.osl:49
 # 		result = atan2(y, x) / M_2PI + 0.5;
 	atan2		$tmp11 ___656_y ___656_x 	%line{49} %argrw{"wrr"}
 	div		$tmp12 $tmp11 $const15 	%argrw{"wrr"}
 	add		___656_result $tmp12 $const13 	%argrw{"wrr"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_gradient_texture.osl:52
+# C:/b/blender/intern/cycles/kernel/shaders/node_gradient_texture.osl:52
 # 		float r = max(1.0 - sqrt(x * x + y * y + z * z), 0.0);
 	mul		$tmp14 ___656_x ___656_x 	%line{52} %argrw{"wrr"}
 	mul		$tmp15 ___656_y ___656_y 	%argrw{"wrr"}
@@ -146,24 +146,24 @@ code ___main___
 	sqrt		$tmp13 $tmp18 	%argrw{"wr"}
 	sub		$tmp19 $const9 $tmp13 	%argrw{"wrr"}
 	max		___662_r $tmp19 $const5 	%argrw{"wrr"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_gradient_texture.osl:54
+# C:/b/blender/intern/cycles/kernel/shaders/node_gradient_texture.osl:54
 # 		if (type == "quadratic_sphere")
 	eq		$tmp20 type $const16 	%line{54} %argrw{"wrr"}
 	if		$tmp20 45 48 	%argrw{"r"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_gradient_texture.osl:55
+# C:/b/blender/intern/cycles/kernel/shaders/node_gradient_texture.osl:55
 # 			result = r * r;
 	mul		___656_result ___662_r ___662_r 	%line{55} %argrw{"wrr"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_gradient_texture.osl:56
+# C:/b/blender/intern/cycles/kernel/shaders/node_gradient_texture.osl:56
 # 		else if (type == "spherical")
 	eq		$tmp21 type $const17 	%line{56} %argrw{"wrr"}
 	if		$tmp21 48 48 	%argrw{"r"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_gradient_texture.osl:57
+# C:/b/blender/intern/cycles/kernel/shaders/node_gradient_texture.osl:57
 # 			result = r;
 	assign		___656_result ___662_r 	%line{57} %argrw{"wr"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_gradient_texture.osl:60
+# C:/b/blender/intern/cycles/kernel/shaders/node_gradient_texture.osl:60
 # 	return result;
 	assign		Fac ___656_result 	%line{60} %argrw{"wr"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_gradient_texture.osl:77
+# C:/b/blender/intern/cycles/kernel/shaders/node_gradient_texture.osl:77
 # 	Color = color(Fac, Fac, Fac);
 	color		Color Fac Fac Fac 	%line{77} %argrw{"wrrr"}
 	end

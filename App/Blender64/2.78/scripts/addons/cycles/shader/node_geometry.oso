@@ -1,6 +1,6 @@
 OpenShadingLanguage 1.00
 # Compiled by oslc 1.7.5
-# options: -q -O2 -IK:/BlenderGit/blender/intern/cycles/kernel/shaders -o K:/BlenderGit/build_windows_Release_x64_vc12_Release/intern/cycles/kernel/shaders/node_geometry.oso
+# options: -q -O2 -IC:/b/blender/intern/cycles/kernel/shaders -o C:/b/build_windows_Release_x64_vc12_Release/intern/cycles/kernel/shaders/node_geometry.oso
 shader node_geometry
 param	normal	NormalIn	0 0 0		%read{2,2} %write{0,0} %initexpr
 param	string	bump_offset	"center"		%read{8,38} %write{2147483647,-1}
@@ -53,58 +53,58 @@ temp	float	$tmp18	%read{37,37} %write{36,36} %derivs
 temp	int	$tmp19	%read{39,39} %write{38,38}
 temp	float	$tmp20	%read{41,41} %write{40,40} %derivs
 code NormalIn
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_geometry.osl:20
+# C:/b/blender/intern/cycles/kernel/shaders/node_geometry.osl:20
 # 	normal NormalIn = N,
-	assign		NormalIn N 	%filename{"K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_geometry.osl"} %line{20} %argrw{"wr"}
+	assign		NormalIn N 	%filename{"C:/b/blender/intern/cycles/kernel/shaders/node_geometry.osl"} %line{20} %argrw{"wr"}
 code ___main___
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_geometry.osl:32
+# C:/b/blender/intern/cycles/kernel/shaders/node_geometry.osl:32
 # 	Position = P;
-	assign		Position P 	%filename{"K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_geometry.osl"} %line{32} %argrw{"wr"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_geometry.osl:33
+	assign		Position P 	%filename{"C:/b/blender/intern/cycles/kernel/shaders/node_geometry.osl"} %line{32} %argrw{"wr"}
+# C:/b/blender/intern/cycles/kernel/shaders/node_geometry.osl:33
 # 	Normal = NormalIn;
 	assign		Normal NormalIn 	%line{33} %argrw{"wr"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_geometry.osl:34
+# C:/b/blender/intern/cycles/kernel/shaders/node_geometry.osl:34
 # 	TrueNormal = Ng;
 	assign		TrueNormal Ng 	%line{34} %argrw{"wr"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_geometry.osl:35
+# C:/b/blender/intern/cycles/kernel/shaders/node_geometry.osl:35
 # 	Incoming = I;
 	assign		Incoming I 	%line{35} %argrw{"wr"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_geometry.osl:36
+# C:/b/blender/intern/cycles/kernel/shaders/node_geometry.osl:36
 # 	Parametric = point(u, v, 0.0);
 	point		Parametric u v $const1 	%line{36} %argrw{"wrrr"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_geometry.osl:37
+# C:/b/blender/intern/cycles/kernel/shaders/node_geometry.osl:37
 # 	Backfacing = backfacing();
 	backfacing	$tmp1 	%line{37} %argrw{"w"}
 	assign		Backfacing $tmp1 	%argrw{"wr"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_geometry.osl:39
+# C:/b/blender/intern/cycles/kernel/shaders/node_geometry.osl:39
 # 	if (bump_offset == "dx") {
 	eq		$tmp2 bump_offset $const2 	%line{39} %argrw{"wrr"}
 	if		$tmp2 14 20 	%argrw{"r"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_geometry.osl:40
+# C:/b/blender/intern/cycles/kernel/shaders/node_geometry.osl:40
 # 		Position += Dx(Position);
 	Dx		$tmp3 Position 	%line{40} %argrw{"wr"} %argderivs{1}
 	add		Position Position $tmp3 	%argrw{"wrr"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_geometry.osl:41
+# C:/b/blender/intern/cycles/kernel/shaders/node_geometry.osl:41
 # 		Parametric += Dx(Parametric);
 	Dx		$tmp4 Parametric 	%line{41} %argrw{"wr"} %argderivs{1}
 	add		Parametric Parametric $tmp4 	%argrw{"wrr"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_geometry.osl:43
+# C:/b/blender/intern/cycles/kernel/shaders/node_geometry.osl:43
 # 	else if (bump_offset == "dy") {
 	eq		$tmp5 bump_offset $const3 	%line{43} %argrw{"wrr"}
 	if		$tmp5 20 20 	%argrw{"r"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_geometry.osl:44
+# C:/b/blender/intern/cycles/kernel/shaders/node_geometry.osl:44
 # 		Position += Dy(Position);
 	Dy		$tmp6 Position 	%line{44} %argrw{"wr"} %argderivs{1}
 	add		Position Position $tmp6 	%argrw{"wrr"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_geometry.osl:45
+# C:/b/blender/intern/cycles/kernel/shaders/node_geometry.osl:45
 # 		Parametric += Dy(Parametric);
 	Dy		$tmp7 Parametric 	%line{45} %argrw{"wr"} %argderivs{1}
 	add		Parametric Parametric $tmp7 	%argrw{"wrr"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_geometry.osl:52
+# C:/b/blender/intern/cycles/kernel/shaders/node_geometry.osl:52
 # 	if (getattribute("geom:generated", generated)) {
 	getattribute	$tmp8 $const4 generated 	%line{52} %argrw{"wrw"}
 	if		$tmp8 32 33 	%argrw{"r"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_geometry.osl:53
+# C:/b/blender/intern/cycles/kernel/shaders/node_geometry.osl:53
 # 		normal data = normal(-(generated[1] - 0.5), (generated[0] - 0.5), 0.0);
 	compref		$tmp9 generated $const5 	%line{53} %argrw{"wrr"}
 	sub		$tmp10 $tmp9 $const6 	%argrw{"wrr"}
@@ -112,33 +112,33 @@ code ___main___
 	compref		$tmp12 generated $const7 	%argrw{"wrr"}
 	sub		$tmp13 $tmp12 $const6 	%argrw{"wrr"}
 	normal		___639_data $tmp11 $tmp13 $const1 	%argrw{"wrrr"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_geometry.osl:54
+# C:/b/blender/intern/cycles/kernel/shaders/node_geometry.osl:54
 # 		vector T = transform("object", "world", data);
 	transformn	___639_T $const8 $const9 ___639_data 	%line{54} %argrw{"wrrr"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_geometry.osl:55
+# C:/b/blender/intern/cycles/kernel/shaders/node_geometry.osl:55
 # 		Tangent = cross(Normal, normalize(cross(T, Normal)));
 	cross		$tmp15 ___639_T Normal 	%line{55} %argrw{"wrr"}
 	normalize	$tmp14 $tmp15 	%argrw{"wr"}
 	cross		Tangent Normal $tmp14 	%argrw{"wrr"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_geometry.osl:59
+# C:/b/blender/intern/cycles/kernel/shaders/node_geometry.osl:59
 # 		Tangent = normalize(dPdu);
 	normalize	Tangent dPdu 	%line{59} %argrw{"wr"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_geometry.osl:62
+# C:/b/blender/intern/cycles/kernel/shaders/node_geometry.osl:62
 # 	getattribute("geom:pointiness", Pointiness);
 	getattribute	$tmp16 $const10 Pointiness 	%line{62} %argrw{"wrw"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_geometry.osl:63
+# C:/b/blender/intern/cycles/kernel/shaders/node_geometry.osl:63
 # 	if (bump_offset == "dx") {
 	eq		$tmp17 bump_offset $const2 	%line{63} %argrw{"wrr"}
 	if		$tmp17 38 42 	%argrw{"r"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_geometry.osl:64
+# C:/b/blender/intern/cycles/kernel/shaders/node_geometry.osl:64
 # 		Pointiness += Dx(Pointiness);
 	Dx		$tmp18 Pointiness 	%line{64} %argrw{"wr"} %argderivs{1}
 	add		Pointiness Pointiness $tmp18 	%argrw{"wrr"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_geometry.osl:66
+# C:/b/blender/intern/cycles/kernel/shaders/node_geometry.osl:66
 # 	else if (bump_offset == "dy") {
 	eq		$tmp19 bump_offset $const3 	%line{66} %argrw{"wrr"}
 	if		$tmp19 42 42 	%argrw{"r"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_geometry.osl:67
+# C:/b/blender/intern/cycles/kernel/shaders/node_geometry.osl:67
 # 		Pointiness += Dy(Pointiness);
 	Dy		$tmp20 Pointiness 	%line{67} %argrw{"wr"} %argderivs{1}
 	add		Pointiness Pointiness $tmp20 	%argrw{"wrr"}

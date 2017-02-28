@@ -1,6 +1,6 @@
 OpenShadingLanguage 1.00
 # Compiled by oslc 1.7.5
-# options: -q -O2 -IK:/BlenderGit/blender/intern/cycles/kernel/shaders -o K:/BlenderGit/build_windows_Release_x86_vc12_Release/intern/cycles/kernel/shaders/node_environment_texture.oso
+# options: -q -O2 -IC:/b/blender/intern/cycles/kernel/shaders -o C:/b/build_windows_Release_x86_vc12_Release/intern/cycles/kernel/shaders/node_environment_texture.oso
 shader node_environment_texture
 param	int	use_mapping	0		%read{2,2} %write{2147483647,-1}
 param	matrix	mapping	0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0		%read{3,3} %write{2147483647,-1} %derivs
@@ -107,30 +107,30 @@ temp	float	$tmp58	%read{110,110} %write{108,108}
 temp	float	$tmp59	%read{110,110} %write{109,109}
 temp	float	$tmp60	%read{111,111} %write{110,110}
 code Vector
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_environment_texture.osl:45
+# C:/b/blender/intern/cycles/kernel/shaders/node_environment_texture.osl:45
 # 	vector Vector = P,
-	assign		Vector P 	%filename{"K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_environment_texture.osl"} %line{45} %argrw{"wr"}
+	assign		Vector P 	%filename{"C:/b/blender/intern/cycles/kernel/shaders/node_environment_texture.osl"} %line{45} %argrw{"wr"}
 code ___main___
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_environment_texture.osl:55
+# C:/b/blender/intern/cycles/kernel/shaders/node_environment_texture.osl:55
 # 	vector p = Vector;
-	assign		p Vector 	%filename{"K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_environment_texture.osl"} %line{55} %argrw{"wr"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_environment_texture.osl:57
+	assign		p Vector 	%filename{"C:/b/blender/intern/cycles/kernel/shaders/node_environment_texture.osl"} %line{55} %argrw{"wr"}
+# C:/b/blender/intern/cycles/kernel/shaders/node_environment_texture.osl:57
 # 	if (use_mapping)
 	if		use_mapping 4 4 	%line{57} %argrw{"r"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_environment_texture.osl:58
+# C:/b/blender/intern/cycles/kernel/shaders/node_environment_texture.osl:58
 # 		p = transform(mapping, p);
 	transformv	p mapping p 	%line{58} %argrw{"wrr"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_environment_texture.osl:60
+# C:/b/blender/intern/cycles/kernel/shaders/node_environment_texture.osl:60
 # 	p = normalize(p);
 	normalize	p p 	%line{60} %argrw{"wr"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_environment_texture.osl:62
+# C:/b/blender/intern/cycles/kernel/shaders/node_environment_texture.osl:62
 # 	if (projection == "equirectangular")
 	eq		$tmp1 projection $const1 	%line{62} %argrw{"wrr"}
 	if		$tmp1 26 45 	%argrw{"r"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_environment_texture.osl:63
+# C:/b/blender/intern/cycles/kernel/shaders/node_environment_texture.osl:63
 # 		p = environment_texture_direction_to_equirectangular(p);
 	functioncall	$const2 26 	%line{63} %argrw{"r"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_environment_texture.osl:22
+# C:/b/blender/intern/cycles/kernel/shaders/node_environment_texture.osl:22
 # 	float u = -atan2(dir[1], dir[0]) / (M_2PI) + 0.5;
 	compref		$tmp3 p $const3 	%line{22} %argrw{"wrr"}
 	compref		$tmp4 p $const4 	%argrw{"wrr"}
@@ -138,113 +138,113 @@ code ___main___
 	neg		$tmp5 $tmp2 	%argrw{"wr"}
 	div		$tmp6 $tmp5 $const5 	%argrw{"wrr"}
 	add		___652_u $tmp6 $const6 	%argrw{"wrr"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_environment_texture.osl:23
+# C:/b/blender/intern/cycles/kernel/shaders/node_environment_texture.osl:23
 # 	float v = atan2(dir[2], hypot(dir[0], dir[1])) / M_PI + 0.5;
 	compref		$tmp8 p $const7 	%line{23} %argrw{"wrr"}
 	compref		$tmp10 p $const4 	%argrw{"wrr"}
 	compref		$tmp11 p $const3 	%argrw{"wrr"}
 	functioncall	$const8 22 	%argrw{"r"}
-# K:/BlenderGit\\blender\\intern\\cycles\\kernel\\shaders\\stdosl.h:113
+# C:/b\\blender\\intern\\cycles\\kernel\\shaders\\stdosl.h:113
 # PERCOMP1 (sin)
-	mul		$tmp12 $tmp10 $tmp10 	%filename{"K:/BlenderGit\\blender\\intern\\cycles\\kernel\\shaders\\stdosl.h"} %line{113} %argrw{"wrr"}
+	mul		$tmp12 $tmp10 $tmp10 	%filename{"C:/b\\blender\\intern\\cycles\\kernel\\shaders\\stdosl.h"} %line{113} %argrw{"wrr"}
 	mul		$tmp13 $tmp11 $tmp11 	%argrw{"wrr"}
 	add		$tmp14 $tmp12 $tmp13 	%argrw{"wrr"}
 	sqrt		$tmp9 $tmp14 	%argrw{"wr"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_environment_texture.osl:23
+# C:/b/blender/intern/cycles/kernel/shaders/node_environment_texture.osl:23
 # 	float v = atan2(dir[2], hypot(dir[0], dir[1])) / M_PI + 0.5;
-	atan2		$tmp7 $tmp8 $tmp9 	%filename{"K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_environment_texture.osl"} %line{23} %argrw{"wrr"}
+	atan2		$tmp7 $tmp8 $tmp9 	%filename{"C:/b/blender/intern/cycles/kernel/shaders/node_environment_texture.osl"} %line{23} %argrw{"wrr"}
 	div		$tmp15 $tmp7 $const9 	%argrw{"wrr"}
 	add		___652_v $tmp15 $const6 	%argrw{"wrr"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_environment_texture.osl:25
+# C:/b/blender/intern/cycles/kernel/shaders/node_environment_texture.osl:25
 # 	return vector(u, v, 0.0);
 	vector		p ___652_u ___652_v $const10 	%line{25} %argrw{"wrrr"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_environment_texture.osl:65
+# C:/b/blender/intern/cycles/kernel/shaders/node_environment_texture.osl:65
 # 		p = environment_texture_direction_to_mirrorball(p);
 	functioncall	$const11 45 	%line{65} %argrw{"r"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_environment_texture.osl:30
+# C:/b/blender/intern/cycles/kernel/shaders/node_environment_texture.osl:30
 # 	dir[1] -= 1.0;
 	compref		$tmp16 p $const3 	%line{30} %argrw{"wrr"}
 	sub		$tmp17 $tmp16 $const12 	%argrw{"wrr"}
 	compassign	p $const3 $tmp17 	%argrw{"wrr"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_environment_texture.osl:32
+# C:/b/blender/intern/cycles/kernel/shaders/node_environment_texture.osl:32
 # 	float div = 2.0 * sqrt(max(-0.5 * dir[1], 0.0));
 	compref		$tmp20 p $const3 	%line{32} %argrw{"wrr"}
 	mul		$tmp21 $const14 $tmp20 	%argrw{"wrr"}
 	max		$tmp19 $tmp21 $const10 	%argrw{"wrr"}
 	sqrt		$tmp18 $tmp19 	%argrw{"wr"}
 	mul		___653_div $const13 $tmp18 	%argrw{"wrr"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_environment_texture.osl:33
+# C:/b/blender/intern/cycles/kernel/shaders/node_environment_texture.osl:33
 # 	if (div > 0.0)
 	gt		$tmp22 ___653_div $const10 	%line{33} %argrw{"wrr"}
 	if		$tmp22 38 38 	%argrw{"r"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_environment_texture.osl:34
+# C:/b/blender/intern/cycles/kernel/shaders/node_environment_texture.osl:34
 # 		dir /= div;
 	div		p p ___653_div 	%line{34} %argrw{"wrr"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_environment_texture.osl:36
+# C:/b/blender/intern/cycles/kernel/shaders/node_environment_texture.osl:36
 # 	float u = 0.5 * (dir[0] + 1.0);
 	compref		$tmp23 p $const4 	%line{36} %argrw{"wrr"}
 	add		$tmp24 $tmp23 $const12 	%argrw{"wrr"}
 	mul		___653_u $const6 $tmp24 	%argrw{"wrr"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_environment_texture.osl:37
+# C:/b/blender/intern/cycles/kernel/shaders/node_environment_texture.osl:37
 # 	float v = 0.5 * (dir[2] + 1.0);
 	compref		$tmp25 p $const7 	%line{37} %argrw{"wrr"}
 	add		$tmp26 $tmp25 $const12 	%argrw{"wrr"}
 	mul		___653_v $const6 $tmp26 	%argrw{"wrr"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_environment_texture.osl:39
+# C:/b/blender/intern/cycles/kernel/shaders/node_environment_texture.osl:39
 # 	return vector(u, v, 0.0);
 	vector		p ___653_u ___653_v $const10 	%line{39} %argrw{"wrrr"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_environment_texture.osl:68
+# C:/b/blender/intern/cycles/kernel/shaders/node_environment_texture.osl:68
 # 	Color = (color)texture(filename, p[0], 1.0 - p[1], "wrap", "periodic", "interp", interpolation, "alpha", Alpha);
 	compref		$tmp27 p $const4 	%line{68} %argrw{"wrr"}
 	compref		$tmp28 p $const3 	%argrw{"wrr"}
 	sub		$tmp29 $const12 $tmp28 	%argrw{"wrr"}
 	texture		Color filename $tmp27 $tmp29 $const15 $const16 $const17 interpolation $const18 Alpha 	%argrw{"wrrrrrrrrw"} %argderivs{2,3}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_environment_texture.osl:70
+# C:/b/blender/intern/cycles/kernel/shaders/node_environment_texture.osl:70
 # 	if (use_alpha) {
 	if		use_alpha 65 65 	%line{70} %argrw{"r"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_environment_texture.osl:71
+# C:/b/blender/intern/cycles/kernel/shaders/node_environment_texture.osl:71
 # 		Color = color_unpremultiply(Color, Alpha);
 	functioncall	$const19 61 	%line{71} %argrw{"r"}
-# K:/BlenderGit\\blender\\intern\\cycles\\kernel\\shaders\\node_color.h:51
+# C:/b\\blender\\intern\\cycles\\kernel\\shaders\\node_color.h:51
 # 	if (alpha != 1.0 && alpha != 0.0)
-	neq		$tmp30 Alpha $const12 	%filename{"K:/BlenderGit\\blender\\intern\\cycles\\kernel\\shaders\\node_color.h"} %line{51} %argrw{"wrr"}
+	neq		$tmp30 Alpha $const12 	%filename{"C:/b\\blender\\intern\\cycles\\kernel\\shaders\\node_color.h"} %line{51} %argrw{"wrr"}
 	neq		$tmp31 $tmp30 $const4 	%argrw{"wrr"}
 	if		$tmp31 57 57 	%argrw{"r"}
 	neq		$tmp32 Alpha $const10 	%argrw{"wrr"}
 	neq		$tmp33 $tmp32 $const4 	%argrw{"wrr"}
 	assign		$tmp31 $tmp33 	%argrw{"wr"}
 	if		$tmp31 60 60 	%argrw{"r"}
-# K:/BlenderGit\\blender\\intern\\cycles\\kernel\\shaders\\node_color.h:52
+# C:/b\\blender\\intern\\cycles\\kernel\\shaders\\node_color.h:52
 # 		return c / alpha;
 	div		Color Color Alpha 	%line{52} %argrw{"wrr"}
 	return
-# K:/BlenderGit\\blender\\intern\\cycles\\kernel\\shaders\\node_color.h:54
+# C:/b\\blender\\intern\\cycles\\kernel\\shaders\\node_color.h:54
 # 	return c;
 	assign		Color Color 	%line{54} %argrw{"wr"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_environment_texture.osl:73
+# C:/b/blender/intern/cycles/kernel/shaders/node_environment_texture.osl:73
 # 
-	eq		$tmp34 is_float $const4 	%filename{"K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_environment_texture.osl"} %line{73} %argrw{"wrr"}
+	eq		$tmp34 is_float $const4 	%filename{"C:/b/blender/intern/cycles/kernel/shaders/node_environment_texture.osl"} %line{73} %argrw{"wrr"}
 	if		$tmp34 65 65 	%argrw{"r"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_environment_texture.osl:74
+# C:/b/blender/intern/cycles/kernel/shaders/node_environment_texture.osl:74
 # vector environment_texture_direction_to_equirectangular(vector dir)
 	assign		$tmp35 $const12 	%line{74} %argrw{"wr"}
 	min		Color Color $tmp35 	%argrw{"wrr"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_environment_texture.osl:77
+# C:/b/blender/intern/cycles/kernel/shaders/node_environment_texture.osl:77
 # 	float v = atan2(dir[2], hypot(dir[0], dir[1])) / M_PI + 0.5;
 	eq		$tmp36 color_space $const20 	%line{77} %argrw{"wrr"}
 	if		$tmp36 114 114 	%argrw{"r"}
-# K:/BlenderGit/blender/intern/cycles/kernel/shaders/node_environment_texture.osl:78
+# C:/b/blender/intern/cycles/kernel/shaders/node_environment_texture.osl:78
 # 
 	functioncall	$const21 114 	%line{78} %argrw{"r"}
-# K:/BlenderGit\\blender\\intern\\cycles\\kernel\\shaders\\node_color.h:36
+# C:/b\\blender\\intern\\cycles\\kernel\\shaders\\node_color.h:36
 # 		color_srgb_to_scene_linear(c[0]),
-	compref		$tmp38 Color $const4 	%filename{"K:/BlenderGit\\blender\\intern\\cycles\\kernel\\shaders\\node_color.h"} %line{36} %argrw{"wrr"}
+	compref		$tmp38 Color $const4 	%filename{"C:/b\\blender\\intern\\cycles\\kernel\\shaders\\node_color.h"} %line{36} %argrw{"wrr"}
 	functioncall	$const21 83 	%argrw{"r"}
-# K:/BlenderGit\\blender\\intern\\cycles\\kernel\\shaders\\node_color.h:19
+# C:/b\\blender\\intern\\cycles\\kernel\\shaders\\node_color.h:19
 # 	if (c < 0.04045)
 	lt		$tmp39 $tmp38 $const22 	%line{19} %argrw{"wrr"}
 	if		$tmp39 78 83 	%argrw{"r"}
-# K:/BlenderGit\\blender\\intern\\cycles\\kernel\\shaders\\node_color.h:20
+# C:/b\\blender\\intern\\cycles\\kernel\\shaders\\node_color.h:20
 # 		return (c < 0.0) ? 0.0 : c * (1.0 / 12.92);
 	lt		$tmp40 $tmp38 $const10 	%line{20} %argrw{"wrr"}
 	if		$tmp40 75 77 	%argrw{"r"}
@@ -252,22 +252,22 @@ code ___main___
 	div		$tmp41 $const12 $const23 	%argrw{"wrr"}
 	mul		$tmp37 $tmp38 $tmp41 	%argrw{"wrr"}
 	return
-# K:/BlenderGit\\blender\\intern\\cycles\\kernel\\shaders\\node_color.h:22
+# C:/b\\blender\\intern\\cycles\\kernel\\shaders\\node_color.h:22
 # 		return pow((c + 0.055) * (1.0 / 1.055), 2.4);
 	add		$tmp42 $tmp38 $const24 	%line{22} %argrw{"wrr"}
 	div		$tmp43 $const12 $const25 	%argrw{"wrr"}
 	mul		$tmp44 $tmp42 $tmp43 	%argrw{"wrr"}
 	pow		$tmp37 $tmp44 $const26 	%argrw{"wrr"}
 	return
-# K:/BlenderGit\\blender\\intern\\cycles\\kernel\\shaders\\node_color.h:37
+# C:/b\\blender\\intern\\cycles\\kernel\\shaders\\node_color.h:37
 # 		color_srgb_to_scene_linear(c[1]),
 	compref		$tmp46 Color $const3 	%line{37} %argrw{"wrr"}
 	functioncall	$const21 98 	%argrw{"r"}
-# K:/BlenderGit\\blender\\intern\\cycles\\kernel\\shaders\\node_color.h:19
+# C:/b\\blender\\intern\\cycles\\kernel\\shaders\\node_color.h:19
 # 	if (c < 0.04045)
 	lt		$tmp47 $tmp46 $const22 	%line{19} %argrw{"wrr"}
 	if		$tmp47 93 98 	%argrw{"r"}
-# K:/BlenderGit\\blender\\intern\\cycles\\kernel\\shaders\\node_color.h:20
+# C:/b\\blender\\intern\\cycles\\kernel\\shaders\\node_color.h:20
 # 		return (c < 0.0) ? 0.0 : c * (1.0 / 12.92);
 	lt		$tmp48 $tmp46 $const10 	%line{20} %argrw{"wrr"}
 	if		$tmp48 90 92 	%argrw{"r"}
@@ -275,22 +275,22 @@ code ___main___
 	div		$tmp49 $const12 $const23 	%argrw{"wrr"}
 	mul		$tmp45 $tmp46 $tmp49 	%argrw{"wrr"}
 	return
-# K:/BlenderGit\\blender\\intern\\cycles\\kernel\\shaders\\node_color.h:22
+# C:/b\\blender\\intern\\cycles\\kernel\\shaders\\node_color.h:22
 # 		return pow((c + 0.055) * (1.0 / 1.055), 2.4);
 	add		$tmp50 $tmp46 $const24 	%line{22} %argrw{"wrr"}
 	div		$tmp51 $const12 $const25 	%argrw{"wrr"}
 	mul		$tmp52 $tmp50 $tmp51 	%argrw{"wrr"}
 	pow		$tmp45 $tmp52 $const26 	%argrw{"wrr"}
 	return
-# K:/BlenderGit\\blender\\intern\\cycles\\kernel\\shaders\\node_color.h:38
+# C:/b\\blender\\intern\\cycles\\kernel\\shaders\\node_color.h:38
 # 		color_srgb_to_scene_linear(c[2]));
 	compref		$tmp54 Color $const7 	%line{38} %argrw{"wrr"}
 	functioncall	$const21 113 	%argrw{"r"}
-# K:/BlenderGit\\blender\\intern\\cycles\\kernel\\shaders\\node_color.h:19
+# C:/b\\blender\\intern\\cycles\\kernel\\shaders\\node_color.h:19
 # 	if (c < 0.04045)
 	lt		$tmp55 $tmp54 $const22 	%line{19} %argrw{"wrr"}
 	if		$tmp55 108 113 	%argrw{"r"}
-# K:/BlenderGit\\blender\\intern\\cycles\\kernel\\shaders\\node_color.h:20
+# C:/b\\blender\\intern\\cycles\\kernel\\shaders\\node_color.h:20
 # 		return (c < 0.0) ? 0.0 : c * (1.0 / 12.92);
 	lt		$tmp56 $tmp54 $const10 	%line{20} %argrw{"wrr"}
 	if		$tmp56 105 107 	%argrw{"r"}
@@ -298,14 +298,14 @@ code ___main___
 	div		$tmp57 $const12 $const23 	%argrw{"wrr"}
 	mul		$tmp53 $tmp54 $tmp57 	%argrw{"wrr"}
 	return
-# K:/BlenderGit\\blender\\intern\\cycles\\kernel\\shaders\\node_color.h:22
+# C:/b\\blender\\intern\\cycles\\kernel\\shaders\\node_color.h:22
 # 		return pow((c + 0.055) * (1.0 / 1.055), 2.4);
 	add		$tmp58 $tmp54 $const24 	%line{22} %argrw{"wrr"}
 	div		$tmp59 $const12 $const25 	%argrw{"wrr"}
 	mul		$tmp60 $tmp58 $tmp59 	%argrw{"wrr"}
 	pow		$tmp53 $tmp60 $const26 	%argrw{"wrr"}
 	return
-# K:/BlenderGit\\blender\\intern\\cycles\\kernel\\shaders\\node_color.h:38
+# C:/b\\blender\\intern\\cycles\\kernel\\shaders\\node_color.h:38
 # 		color_srgb_to_scene_linear(c[2]));
 	color		Color $tmp37 $tmp45 $tmp53 	%line{38} %argrw{"wrrr"}
 	end
